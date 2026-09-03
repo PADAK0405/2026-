@@ -273,6 +273,18 @@
             <span class="panel-count-badge">Quick Publisher</span>
           </div>
 
+          <!-- Google Apps Script Web App URL 설정 바 -->
+          <div style="background-color: var(--color-paper-subtle); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-sm) var(--space-md); margin-top: var(--space-md); margin-bottom: var(--space-md);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2xs); flex-wrap: wrap; gap: var(--space-xs);">
+              <label for="admin-gas-url" class="admin-label" style="margin-bottom: 0;">Google Apps Script 웹 앱 URL (시트 직접 저장)</label>
+              <span id="gas-status-badge" class="mono-text" style="font-size: var(--text-2xs); font-weight: 700;">확인 중...</span>
+            </div>
+            <div style="display: flex; gap: var(--space-xs);">
+              <input type="url" id="admin-gas-url" class="admin-input" style="font-size: var(--text-xs); padding: 0.4rem 0.6rem;" placeholder="https://script.google.com/macros/s/.../exec">
+              <button type="button" id="btn-save-gas-url" class="btn-secondary" style="white-space: nowrap; padding: 0.4rem 0.85rem; font-size: var(--text-xs); font-weight: 600;">저장</button>
+            </div>
+          </div>
+
           <form id="quick-publish-form" onsubmit="return false;" style="margin-top: var(--space-md);">
             
             <!-- 1. 구분 선택 -->
@@ -365,9 +377,6 @@
               <button type="button" id="btn-submit-live" class="btn-primary" style="flex: 1; min-width: 180px;">
                 <span>구글 시트에 즉시 등록하기</span>
               </button>
-              <button type="button" id="btn-copy-format" class="btn-secondary">
-                <span>시트 복사용 생성</span>
-              </button>
             </div>
 
           </form>
@@ -425,7 +434,7 @@
   <script src="app.js"></script>
   <script>
     // =========================================================================
-    // Admin Portal Controller (Emoji Free)
+    // Admin Portal Controller (Direct Google Sheets Live Integration)
     // =========================================================================
     (function () {
       const lockScreen = document.getElementById('admin-lock-screen');
@@ -477,8 +486,37 @@
         });
       }
 
-      // 2. Dashboard Interactive Controls
+      // 2. Apps Script Web App URL 관리
+      function getEffectiveGasUrl() {
+        const stored = localStorage.getItem('class_portal_gas_url');
+        if (stored && stored.trim()) return stored.trim();
+        if (typeof CONFIG !== 'undefined' && CONFIG.gasApiUrl && CONFIG.gasApiUrl.trim()) {
+          return CONFIG.gasApiUrl.trim();
+        }
+        return '';
+      }
+
+      function updateGasStatusUI() {
+        const gasInput = document.getElementById('admin-gas-url');
+        const badge = document.getElementById('gas-status-badge');
+        const url = getEffectiveGasUrl();
+
+        if (gasInput) gasInput.value = url;
+        if (badge) {
+          if (url) {
+            badge.textContent = '연동 완료 (시트 직접 저장 활성화)';
+            badge.style.color = 'var(--color-primary-ink)';
+          } else {
+            badge.textContent = '웹 앱 URL 입력 필요';
+            badge.style.color = 'var(--color-urgent)';
+          }
+        }
+      }
+
+      // 3. Dashboard Interactive Controls
       function initAdminDashboard() {
+        updateGasStatusUI();
+
         // Today Default Date
         const today = new Date();
         const todayISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -491,9 +529,27 @@
         setupRadioPills('badge-pills');
         setupDateModePills();
 
+        // Save Apps Script URL button
+        const btnSaveGas = document.getElementById('btn-save-gas-url');
+        if (btnSaveGas) {
+          btnSaveGas.addEventListener('click', () => {
+            const val = document.getElementById('admin-gas-url').value.trim();
+            if (val) {
+              localStorage.setItem('class_portal_gas_url', val);
+              if (typeof CONFIG !== 'undefined') CONFIG.gasApiUrl = val;
+              updateGasStatusUI();
+              alert('Apps Script 웹 앱 URL이 저장되었습니다.\n이제 [구글 시트에 즉시 등록하기] 클릭 시 시트에 바로 저장됩니다.');
+            } else {
+              localStorage.removeItem('class_portal_gas_url');
+              if (typeof CONFIG !== 'undefined') CONFIG.gasApiUrl = '';
+              updateGasStatusUI();
+              alert('웹 앱 URL이 초기화되었습니다.');
+            }
+          });
+        }
+
         // Publish live action
         document.getElementById('btn-submit-live').addEventListener('click', handlePublish);
-        document.getElementById('btn-copy-format').addEventListener('click', handleCopyFormat);
         document.getElementById('btn-refresh-data').addEventListener('click', renderAdminTable);
 
         renderAdminTable();
@@ -527,10 +583,8 @@
 
             const cat = pill.dataset.val;
             if (cat === '일정') {
-              // 일정은 캘린더용이므로 단일 날짜로 자동 전환
               setDateMode('single');
             } else if (cat === '공지사항') {
-              // 공지사항은 상시 공지가 많으므로 날짜 없음으로 기본 전환
               setDateMode('none');
             }
           });
@@ -604,6 +658,7 @@
         };
       }
 
+      // 구글 스프레드시트 직접 전송 (Apps Script Web App)
       async function handlePublish() {
         const data = getFormData();
         if (!data.title) {
@@ -618,57 +673,42 @@
           return;
         }
 
-        const gasUrl = typeof CONFIG !== 'undefined' && CONFIG.gasApiUrl ? CONFIG.gasApiUrl.trim() : '';
+        const gasUrl = getEffectiveGasUrl();
 
-        if (gasUrl) {
-          try {
-            const btn = document.getElementById('btn-submit-live');
-            btn.disabled = true;
-            btn.textContent = '구글 시트에 전송 중...';
-
-            await fetch(gasUrl, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            });
-
-            btn.disabled = false;
-            btn.innerHTML = '<span>구글 시트에 즉시 등록하기</span>';
-            alert('구글 스프레드시트에 성공적으로 등록되었습니다.\n(학생 포털에 즉시 반영됩니다)');
-            document.getElementById('pub-title').value = '';
-            document.getElementById('pub-content').value = '';
-            setTimeout(renderAdminTable, 1500);
-          } catch (err) {
-            alert('전송 중 오류가 발생했습니다. 구글 시트를 직접 열어 추가합니다.');
-            openSheetWithCopy(data);
-          }
-        } else {
-          // Apps Script URL이 없는 경우: 서식 클립보드 복사 후 스프레드시트 새 탭 열기
-          openSheetWithCopy(data);
-        }
-      }
-
-      function openSheetWithCopy(data) {
-        const rowText = `${data.category}\t${data.date}\t${data.title}\t${data.content}\t${data.author}\t${data.badge}`;
-        navigator.clipboard.writeText(rowText).then(() => {
-          alert(`[${data.title}] 행 데이터가 클립보드에 복사되었습니다.\n\n열리는 스프레드시트의 맨 아래 행 빈칸에 [Ctrl + V]로 붙여넣으시면 즉시 완료됩니다.`);
-          window.open(CONFIG.googleSheetUrl, '_blank');
-        }).catch(() => {
-          window.open(CONFIG.googleSheetUrl, '_blank');
-        });
-      }
-
-      function handleCopyFormat() {
-        const data = getFormData();
-        if (!data.title) {
-          alert('제목을 먼저 입력해 주세요.');
+        if (!gasUrl) {
+          alert('Apps Script 웹 앱 URL이 설정되지 않았습니다.\n상단의 [Google Apps Script 웹 앱 URL] 칸에 배포하신 URL(https://script.google.com/macros/s/.../exec)을 입력하고 [저장]을 눌러주세요!');
+          const gasInput = document.getElementById('admin-gas-url');
+          if (gasInput) gasInput.focus();
           return;
         }
-        const rowText = `${data.category}\t${data.date}\t${data.title}\t${data.content}\t${data.author}\t${data.badge}`;
-        navigator.clipboard.writeText(rowText).then(() => {
-          alert('스프레드시트용 행 데이터가 복사되었습니다. 구글 시트에 붙여넣으세요.');
-        });
+
+        const btn = document.getElementById('btn-submit-live');
+        btn.disabled = true;
+        btn.textContent = '구글 시트에 직접 저장 중...';
+
+        try {
+          await fetch(gasUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(data)
+          });
+
+          btn.disabled = false;
+          btn.innerHTML = '<span>구글 시트에 즉시 등록하기</span>';
+          alert(`[${data.title}] 항목이 구글 스프레드시트에 직접 저장되었습니다!\n학생 포털 화면에 실시간으로 반영됩니다.`);
+          
+          document.getElementById('pub-title').value = '';
+          document.getElementById('pub-content').value = '';
+          
+          setTimeout(() => {
+            renderAdminTable();
+          }, 1200);
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>구글 시트에 즉시 등록하기</span>';
+          alert('구글 시트 전송 중 오류가 발생했습니다: ' + err.message);
+        }
       }
 
       function renderAdminTable() {
@@ -680,7 +720,7 @@
           document.getElementById('stat-events').textContent = `일정 4건`;
           document.getElementById('stat-posts').textContent = `게시글 0건`;
 
-          // 시트 데이터 렌더링
+          // 시트 실시간 데이터 샘플 렌더링
           const sampleRows = [
             { cat: '공지사항', date: '2026-08-27', title: '방과후학교 개강', badge: '공지' },
             { cat: '공지사항', date: '2026-08-26', title: '독서와 작문 책 준비', badge: '공지' },
