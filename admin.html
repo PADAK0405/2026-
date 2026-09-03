@@ -9,17 +9,34 @@
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Admin Specific Workbench Styles */
+    /* =========================================================================
+       Strict Security Rules: Hide all admin elements before PIN is confirmed
+       ========================================================================= */
+    body[data-page="admin"] .site-header,
+    body[data-page="admin"] #admin-main-content {
+      display: none !important;
+    }
+    body[data-page="admin"].is-authenticated .site-header {
+      display: block !important;
+    }
+    body[data-page="admin"].is-authenticated #admin-main-content {
+      display: block !important;
+    }
+    body[data-page="admin"].is-authenticated #admin-lock-screen {
+      display: none !important;
+    }
+
+    /* Lock Screen Overlay */
     .admin-lock-overlay {
       position: fixed;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background-color: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
+      z-index: 99999;
       padding: var(--space-md);
     }
     .admin-lock-card {
@@ -184,15 +201,15 @@
 <body data-page="admin">
 
   <!-- =========================================================================
-       1. PIN Lock Screen (보안 잠금 화면 - 이모지 없음, 힌트 없음)
+       1. PIN Lock Screen (보안 잠금 화면 - 접속 시 무조건 202622 요구)
        ========================================================================= -->
   <div id="admin-lock-screen" class="admin-lock-overlay" role="dialog" aria-modal="true">
     <div class="admin-lock-card">
       <h2 class="admin-lock-title">관리자 인증</h2>
-      <p class="admin-lock-desc">학급 포털 관리자 센터 접근을 위해 PIN 번호를 입력하세요.</p>
+      <p class="admin-lock-desc">학급 포털 관리자 센터 접근을 위해 6자리 PIN 번호를 입력하세요.</p>
       
       <form id="admin-pin-form" onsubmit="return false;">
-        <input type="password" id="admin-pin-input" class="admin-pin-input" maxlength="10" inputmode="numeric" placeholder="••••••" autofocus autocomplete="current-password">
+        <input type="password" id="admin-pin-input" class="admin-pin-input" maxlength="10" inputmode="numeric" placeholder="••••••" autofocus autocomplete="off">
         <div id="admin-error-msg" class="admin-error-msg"></div>
         <button type="submit" id="admin-login-btn" class="btn-primary admin-btn-block">
           <span>인증하기</span>
@@ -206,7 +223,7 @@
   </div>
 
   <!-- =========================================================================
-       2. Site Header (관리자 전용 헤더 - 이모지 없음)
+       2. Site Header (인증 성공 시에만 노출)
        ========================================================================= -->
   <header class="site-header">
     <div class="container nav-container">
@@ -244,9 +261,9 @@
   </header>
 
   <!-- =========================================================================
-       3. Main Admin Layout
+       3. Main Admin Layout (인증 성공 시에만 노출)
        ========================================================================= -->
-  <main id="admin-main-content" class="main-wrapper" style="display: none;">
+  <main id="admin-main-content" class="main-wrapper">
     <div class="container">
 
       <!-- Status Strip -->
@@ -434,38 +451,35 @@
   <script src="app.js"></script>
   <script>
     // =========================================================================
-    // Admin Portal Controller (Direct Google Sheets Live Integration)
+    // Admin Portal Controller (Strict 202622 PIN Security Enforcement)
     // =========================================================================
     (function () {
       const lockScreen = document.getElementById('admin-lock-screen');
-      const mainContent = document.getElementById('admin-main-content');
       const pinInput = document.getElementById('admin-pin-input');
       const errorMsg = document.getElementById('admin-error-msg');
       const pinForm = document.getElementById('admin-pin-form');
       const logoutBtn = document.getElementById('admin-logout-btn');
 
-      const expectedPin = (typeof CONFIG !== 'undefined' && CONFIG.adminPin) ? String(CONFIG.adminPin).trim() : '202622';
+      // 비밀번호는 무조건 202622로 엄격 검증
+      const EXPECTED_PIN = '202622';
 
       // 1. PIN Authentication
-      function checkAuth() {
-        if (sessionStorage.getItem('class_portal_admin_auth') === 'true') {
-          lockScreen.style.display = 'none';
-          mainContent.style.display = 'block';
-          initAdminDashboard();
-        } else {
-          lockScreen.style.display = 'flex';
-          mainContent.style.display = 'none';
+      function lockAdmin() {
+        document.body.classList.remove('is-authenticated');
+        sessionStorage.removeItem('class_portal_admin_auth');
+        if (pinInput) {
+          pinInput.value = '';
           pinInput.focus();
         }
+        if (errorMsg) errorMsg.textContent = '';
       }
 
       function handleLogin() {
         const inputVal = pinInput.value.trim();
-        if (inputVal === expectedPin) {
+        if (inputVal === EXPECTED_PIN) {
+          document.body.classList.add('is-authenticated');
           sessionStorage.setItem('class_portal_admin_auth', 'true');
           errorMsg.textContent = '';
-          lockScreen.style.display = 'none';
-          mainContent.style.display = 'block';
           initAdminDashboard();
         } else {
           errorMsg.textContent = 'PIN 번호가 일치하지 않습니다. 다시 입력해 주세요.';
@@ -481,10 +495,13 @@
 
       if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-          sessionStorage.removeItem('class_portal_admin_auth');
+          lockAdmin();
           location.reload();
         });
       }
+
+      // 페이지 진입 시: 이전 세션 무시하고 무조건 암호 입력 창 표시
+      lockAdmin();
 
       // 2. Apps Script Web App URL 관리
       function getEffectiveGasUrl() {
@@ -569,7 +586,6 @@
         });
       }
 
-      // Category Pill Logic (Switching category changes default date mode)
       function setupCategoryPills() {
         const container = document.getElementById('category-pills');
         if (!container) return;
@@ -591,7 +607,6 @@
         });
       }
 
-      // Date Mode Pills Logic (none / single / range)
       function setupDateModePills() {
         const container = document.getElementById('date-mode-pills');
         if (!container) return;
@@ -645,7 +660,7 @@
           const e = document.getElementById('pub-range-end').value;
           dateStr = s === e ? s : `${s}~${e}`;
         } else {
-          dateStr = ''; // 날짜 없음
+          dateStr = '';
         }
 
         return {
@@ -658,7 +673,6 @@
         };
       }
 
-      // 구글 스프레드시트 직접 전송 (Apps Script Web App)
       async function handlePublish() {
         const data = getFormData();
         if (!data.title) {
@@ -676,7 +690,7 @@
         const gasUrl = getEffectiveGasUrl();
 
         if (!gasUrl) {
-          alert('Apps Script 웹 앱 URL이 설정되지 않았습니다.\n상단의 [Google Apps Script 웹 앱 URL] 칸에 배포하신 URL(https://script.google.com/macros/s/.../exec)을 입력하고 [저장]을 눌러주세요!');
+          alert('Apps Script 웹 앱 URL이 설정되지 않았습니다.\n상단의 [Google Apps Script 웹 앱 URL] 칸에 배포하신 URL을 입력하고 [저장]을 눌러주세요!');
           const gasInput = document.getElementById('admin-gas-url');
           if (gasInput) gasInput.focus();
           return;
@@ -720,7 +734,6 @@
           document.getElementById('stat-events').textContent = `일정 4건`;
           document.getElementById('stat-posts').textContent = `게시글 0건`;
 
-          // 시트 실시간 데이터 샘플 렌더링
           const sampleRows = [
             { cat: '공지사항', date: '2026-08-27', title: '방과후학교 개강', badge: '공지' },
             { cat: '공지사항', date: '2026-08-26', title: '독서와 작문 책 준비', badge: '공지' },
@@ -739,9 +752,6 @@
           `).join('');
         }, 600);
       }
-
-      // Start auth check
-      checkAuth();
     })();
   </script>
 </body>
