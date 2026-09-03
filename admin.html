@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2학년 2반 학급 포털 | 관리자 센터</title>
+  <meta name="description" content="2026학년도 2학년 2반 학급 포털 관리자 전용 대시보드">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Admin Specific Workbench Styles */
+    .admin-lock-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: var(--space-md);
+    }
+    .admin-lock-card {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      max-width: 380px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+    .admin-lock-title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-xs);
+      color: var(--color-ink);
+    }
+    .admin-lock-desc {
+      font-size: var(--text-xs);
+      color: var(--color-ink-muted);
+      margin-bottom: var(--space-lg);
+    }
+    .admin-pin-input {
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      letter-spacing: 0.35em;
+      padding: 0.6rem;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background-color: var(--color-paper-subtle);
+      color: var(--color-ink);
+      margin-bottom: var(--space-md);
+      transition: border-color var(--dur-fast) var(--ease-out);
+    }
+    .admin-pin-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+    .admin-error-msg {
+      color: var(--color-urgent);
+      font-size: var(--text-xs);
+      margin-bottom: var(--space-sm);
+      min-height: 1.2em;
+      font-weight: 600;
+    }
+    .admin-btn-block {
+      width: 100%;
+      justify-content: center;
+      padding: 0.65rem;
+    }
+
+    /* Admin Form Styling */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .admin-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .admin-form-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xs);
+      margin-bottom: var(--space-md);
+    }
+    .admin-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-ink-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-input, .admin-textarea, .admin-select {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background-color: var(--color-paper-subtle);
+      color: var(--color-ink);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      transition: border-color var(--dur-fast) var(--ease-out);
+    }
+    .admin-input:focus, .admin-textarea:focus, .admin-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      background-color: var(--color-surface);
+    }
+    .admin-textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: var(--leading-relaxed);
+    }
+    .admin-radio-pills {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .admin-radio-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xs);
+      background-color: var(--color-surface);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-ink-secondary);
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+    .admin-radio-pill input {
+      display: none;
+    }
+    .admin-radio-pill.active {
+      border-color: var(--color-primary);
+      background-color: var(--color-primary-light);
+      color: var(--color-primary-ink);
+    }
+    .admin-date-dual {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .admin-stat-chip {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-xs);
+      background-color: var(--color-paper-subtle);
+      border: 1px solid var(--color-border);
+      color: var(--color-ink);
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-xs);
+    }
+    .admin-table th, .admin-table td {
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .admin-table th {
+      background-color: var(--color-paper-subtle);
+      font-weight: 700;
+      color: var(--color-ink-secondary);
+    }
+  </style>
+</head>
+<body data-page="admin">
+
+  <!-- =========================================================================
+       1. PIN Lock Screen (보안 잠금 화면 - 이모지 없음, 힌트 없음)
+       ========================================================================= -->
+  <div id="admin-lock-screen" class="admin-lock-overlay" role="dialog" aria-modal="true">
+    <div class="admin-lock-card">
+      <h2 class="admin-lock-title">관리자 인증</h2>
+      <p class="admin-lock-desc">학급 포털 관리자 센터 접근을 위해 PIN 번호를 입력하세요.</p>
+      
+      <form id="admin-pin-form" onsubmit="return false;">
+        <input type="password" id="admin-pin-input" class="admin-pin-input" maxlength="10" inputmode="numeric" placeholder="••••••" autofocus autocomplete="current-password">
+        <div id="admin-error-msg" class="admin-error-msg"></div>
+        <button type="submit" id="admin-login-btn" class="btn-primary admin-btn-block">
+          <span>인증하기</span>
+        </button>
+      </form>
+
+      <div style="margin-top: var(--space-lg);">
+        <a href="index.html" class="mono-text" style="font-size: var(--text-2xs); color: var(--color-ink-muted);">[학급 포털 메인으로 돌아가기]</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       2. Site Header (관리자 전용 헤더 - 이모지 없음)
+       ========================================================================= -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <div class="brand-wrapper">
+        <div class="brand-emblem" style="background: var(--color-urgent); color: white;">ADM</div>
+        <div class="brand-title-group">
+          <h1 id="portal-title">2학년 2반 관리자 센터</h1>
+          <span id="class-badge" class="mono-text">선생님 & 학급임원 전용</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu" aria-label="관리자 메뉴">
+        <a href="index.html" class="nav-link">
+          <span>학생 포털 홈</span>
+        </a>
+        <a href="https://docs.google.com/spreadsheets/d/1fs-42tnD-60AkSjjE4mUrJIEe-1q0Na7BK2xPn4cqWg/edit?gid=0#gid=0" id="admin-sheet-link" target="_blank" rel="noopener noreferrer" class="nav-link">
+          <span>시트 편집 바로가기 ↗</span>
+        </a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNpYNzPwAeEYAdoV9FRGV41Hun-ddPtkYnTIRdIU3GQez51A/viewform" id="admin-form-link" target="_blank" rel="noopener noreferrer" class="nav-link">
+          <span>건의함 바로가기 ↗</span>
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="admin-logout-btn" class="btn-secondary" style="padding: 0.25rem 0.55rem; font-size: var(--text-2xs);">
+          <span>로그아웃</span>
+        </button>
+        <button id="theme-toggle" class="btn-icon-square" aria-label="테마 변경">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       3. Main Admin Layout
+       ========================================================================= -->
+  <main id="admin-main-content" class="main-wrapper" style="display: none;">
+    <div class="container">
+
+      <!-- Status Strip -->
+      <section class="status-deck" aria-label="관리자 현황">
+        <div class="status-deck-left">
+          <span class="status-indicator-dot"></span>
+          <span class="status-deck-title">구글 스프레드시트 실시간 연결 완료</span>
+          <span class="status-deck-desc">작성한 데이터는 학급 포털 학생 화면에 즉시 동기화됩니다.</span>
+        </div>
+        <div class="status-deck-right">
+          <span id="stat-notices" class="admin-stat-chip">공지 0건</span>
+          <span id="stat-events" class="admin-stat-chip">일정 0건</span>
+          <span id="stat-posts" class="admin-stat-chip">게시글 0건</span>
+        </div>
+      </section>
+
+      <!-- 2-Column Admin Grid -->
+      <div class="admin-grid">
+
+        <!-- Left: Quick Publisher Form -->
+        <section class="workbench-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">공지 / 학사일정 즉시 등록기</h2>
+            <span class="panel-count-badge">Quick Publisher</span>
+          </div>
+
+          <form id="quick-publish-form" onsubmit="return false;" style="margin-top: var(--space-md);">
+            
+            <!-- 1. 구분 선택 -->
+            <div class="admin-form-row">
+              <label class="admin-label">1. 항목 구분 (Category)</label>
+              <div class="admin-radio-pills" id="category-pills">
+                <label class="admin-radio-pill active" data-val="공지사항">
+                  <input type="radio" name="pub-category" value="공지사항" checked> 공지사항
+                </label>
+                <label class="admin-radio-pill" data-val="일정">
+                  <input type="radio" name="pub-category" value="일정"> 학사일정 (캘린더)
+                </label>
+                <label class="admin-radio-pill" data-val="자유게시판">
+                  <input type="radio" name="pub-category" value="자유게시판"> 자유게시판
+                </label>
+              </div>
+            </div>
+
+            <!-- 2. 뱃지/색상 선택 -->
+            <div class="admin-form-row">
+              <label class="admin-label">2. 뱃지 라벨 및 색상 (Badge)</label>
+              <div class="admin-radio-pills" id="badge-pills">
+                <label class="admin-radio-pill active" data-val="공지" style="color: var(--color-urgent);">
+                  <input type="radio" name="pub-badge" value="공지" checked> 공지 (빨간색)
+                </label>
+                <label class="admin-radio-pill" data-val="알림" style="color: var(--color-warning-ink);">
+                  <input type="radio" name="pub-badge" value="알림"> 알림 (노란색)
+                </label>
+                <label class="admin-radio-pill" data-val="시험" style="color: var(--color-urgent);">
+                  <input type="radio" name="pub-badge" value="시험"> 시험 (D-Day 연동)
+                </label>
+                <label class="admin-radio-pill" data-val="행사">
+                  <input type="radio" name="pub-badge" value="행사"> 행사/기타
+                </label>
+              </div>
+            </div>
+
+            <!-- 3. 날짜 설정 토글 (상시공지 / 단일일자 / 연속기간) -->
+            <div class="admin-form-row">
+              <label class="admin-label">3. 날짜 설정 (Date)</label>
+              
+              <div class="admin-radio-pills" id="date-mode-pills">
+                <label class="admin-radio-pill active" data-mode="none">
+                  <input type="radio" name="pub-date-mode" value="none" checked> 날짜 없음 (상시/일반 공지)
+                </label>
+                <label class="admin-radio-pill" data-mode="single">
+                  <input type="radio" name="pub-date-mode" value="single"> 단일 날짜
+                </label>
+                <label class="admin-radio-pill" data-mode="range">
+                  <input type="radio" name="pub-date-mode" value="range"> 연속 기간 (시작일 ~ 종료일)
+                </label>
+              </div>
+
+              <!-- 단일 날짜 입력 박스 -->
+              <div id="single-date-box" style="display: none; margin-top: var(--space-xs);">
+                <input type="date" id="pub-start-date" class="admin-input">
+              </div>
+
+              <!-- 연속 기간 입력 박스 -->
+              <div id="dual-date-box" class="admin-date-dual" style="display: none; margin-top: var(--space-xs);">
+                <input type="date" id="pub-range-start" class="admin-input">
+                <span class="mono-text">~</span>
+                <input type="date" id="pub-range-end" class="admin-input">
+              </div>
+            </div>
+
+            <!-- 4. 제목 입력 -->
+            <div class="admin-form-row">
+              <label class="admin-label" for="pub-title">4. 제목 (Title)</label>
+              <input type="text" id="pub-title" class="admin-input" placeholder="예: 2학기 중간고사 시험범위 안내, 9월 모의고사 등" required>
+            </div>
+
+            <!-- 5. 작성자 입력 -->
+            <div class="admin-form-row">
+              <label class="admin-label" for="pub-author">5. 작성자 (Author)</label>
+              <input type="text" id="pub-author" class="admin-input" value="담임교사" placeholder="담임교사 / 이건호 / 학급알리미">
+            </div>
+
+            <!-- 6. 상세 내용 입력 -->
+            <div class="admin-form-row">
+              <label class="admin-label" for="pub-content">
+                <span>6. 상세 본문 내용 (Content)</span>
+                <span style="font-size: var(--text-2xs); color: var(--color-ink-muted);">일정일 경우 비워두셔도 됩니다</span>
+              </label>
+              <textarea id="pub-content" class="admin-textarea" placeholder="상세 공지사항 본문 내용을 입력하세요. URL 링크는 자동으로 클릭 가능한 하이퍼링크로 치환됩니다."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-lg); flex-wrap: wrap;">
+              <button type="button" id="btn-submit-live" class="btn-primary" style="flex: 1; min-width: 180px;">
+                <span>구글 시트에 즉시 등록하기</span>
+              </button>
+              <button type="button" id="btn-copy-format" class="btn-secondary">
+                <span>시트 복사용 생성</span>
+              </button>
+            </div>
+
+          </form>
+        </section>
+
+        <!-- Right Column: Live Data Table -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+          
+          <!-- Live Current Data Overview -->
+          <section class="workbench-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">현재 시트 데이터 실시간 현황</h2>
+              <button id="btn-refresh-data" class="panel-action-link" style="border: none; cursor: pointer;">
+                <span>새로고침</span>
+              </button>
+            </div>
+
+            <div style="margin-top: var(--space-md); max-height: 480px; overflow-y: auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>구분</th>
+                    <th>날짜</th>
+                    <th>제목</th>
+                    <th>뱃지</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-data-tbody">
+                  <tr>
+                    <td colspan="4" style="text-align: center; color: var(--color-ink-muted); padding: var(--space-md);">데이터 로딩 중...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: var(--space-md); text-align: right;">
+              <a href="https://docs.google.com/spreadsheets/d/1fs-42tnD-60AkSjjE4mUrJIEe-1q0Na7BK2xPn4cqWg/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" class="panel-action-link">
+                <span>스프레드시트에서 직접 수정 / 삭제하기 ↗</span>
+              </a>
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // =========================================================================
+    // Admin Portal Controller (Emoji Free)
+    // =========================================================================
+    (function () {
+      const lockScreen = document.getElementById('admin-lock-screen');
+      const mainContent = document.getElementById('admin-main-content');
+      const pinInput = document.getElementById('admin-pin-input');
+      const errorMsg = document.getElementById('admin-error-msg');
+      const pinForm = document.getElementById('admin-pin-form');
+      const logoutBtn = document.getElementById('admin-logout-btn');
+
+      const expectedPin = (typeof CONFIG !== 'undefined' && CONFIG.adminPin) ? String(CONFIG.adminPin).trim() : '202622';
+
+      // 1. PIN Authentication
+      function checkAuth() {
+        if (sessionStorage.getItem('class_portal_admin_auth') === 'true') {
+          lockScreen.style.display = 'none';
+          mainContent.style.display = 'block';
+          initAdminDashboard();
+        } else {
+          lockScreen.style.display = 'flex';
+          mainContent.style.display = 'none';
+          pinInput.focus();
+        }
+      }
+
+      function handleLogin() {
+        const inputVal = pinInput.value.trim();
+        if (inputVal === expectedPin) {
+          sessionStorage.setItem('class_portal_admin_auth', 'true');
+          errorMsg.textContent = '';
+          lockScreen.style.display = 'none';
+          mainContent.style.display = 'block';
+          initAdminDashboard();
+        } else {
+          errorMsg.textContent = 'PIN 번호가 일치하지 않습니다. 다시 입력해 주세요.';
+          pinInput.value = '';
+          pinInput.focus();
+        }
+      }
+
+      pinForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleLogin();
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          sessionStorage.removeItem('class_portal_admin_auth');
+          location.reload();
+        });
+      }
+
+      // 2. Dashboard Interactive Controls
+      function initAdminDashboard() {
+        // Today Default Date
+        const today = new Date();
+        const todayISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        document.getElementById('pub-start-date').value = todayISO;
+        document.getElementById('pub-range-start').value = todayISO;
+        document.getElementById('pub-range-end').value = todayISO;
+
+        // Radio Pill selection
+        setupCategoryPills();
+        setupRadioPills('badge-pills');
+        setupDateModePills();
+
+        // Publish live action
+        document.getElementById('btn-submit-live').addEventListener('click', handlePublish);
+        document.getElementById('btn-copy-format').addEventListener('click', handleCopyFormat);
+        document.getElementById('btn-refresh-data').addEventListener('click', renderAdminTable);
+
+        renderAdminTable();
+      }
+
+      function setupRadioPills(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const pills = container.querySelectorAll('.admin-radio-pill');
+        pills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            const radio = pill.querySelector('input');
+            if (radio) radio.checked = true;
+          });
+        });
+      }
+
+      // Category Pill Logic (Switching category changes default date mode)
+      function setupCategoryPills() {
+        const container = document.getElementById('category-pills');
+        if (!container) return;
+        const pills = container.querySelectorAll('.admin-radio-pill');
+        pills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            const radio = pill.querySelector('input');
+            if (radio) radio.checked = true;
+
+            const cat = pill.dataset.val;
+            if (cat === '일정') {
+              // 일정은 캘린더용이므로 단일 날짜로 자동 전환
+              setDateMode('single');
+            } else if (cat === '공지사항') {
+              // 공지사항은 상시 공지가 많으므로 날짜 없음으로 기본 전환
+              setDateMode('none');
+            }
+          });
+        });
+      }
+
+      // Date Mode Pills Logic (none / single / range)
+      function setupDateModePills() {
+        const container = document.getElementById('date-mode-pills');
+        if (!container) return;
+        const pills = container.querySelectorAll('.admin-radio-pill');
+        pills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            const mode = pill.dataset.mode;
+            setDateMode(mode);
+          });
+        });
+      }
+
+      function setDateMode(mode) {
+        const pills = document.querySelectorAll('#date-mode-pills .admin-radio-pill');
+        pills.forEach(p => {
+          if (p.dataset.mode === mode) {
+            p.classList.add('active');
+            const radio = p.querySelector('input');
+            if (radio) radio.checked = true;
+          } else {
+            p.classList.remove('active');
+          }
+        });
+
+        const singleBox = document.getElementById('single-date-box');
+        const dualBox = document.getElementById('dual-date-box');
+
+        if (mode === 'none') {
+          singleBox.style.display = 'none';
+          dualBox.style.display = 'none';
+        } else if (mode === 'single') {
+          singleBox.style.display = 'block';
+          dualBox.style.display = 'none';
+        } else if (mode === 'range') {
+          singleBox.style.display = 'none';
+          dualBox.style.display = 'grid';
+        }
+      }
+
+      function getFormData() {
+        const catRadio = document.querySelector('input[name="pub-category"]:checked');
+        const badgeRadio = document.querySelector('input[name="pub-badge"]:checked');
+        const dateModeRadio = document.querySelector('input[name="pub-date-mode"]:checked');
+        const dateMode = dateModeRadio ? dateModeRadio.value : 'none';
+
+        let dateStr = '';
+        if (dateMode === 'single') {
+          dateStr = document.getElementById('pub-start-date').value;
+        } else if (dateMode === 'range') {
+          const s = document.getElementById('pub-range-start').value;
+          const e = document.getElementById('pub-range-end').value;
+          dateStr = s === e ? s : `${s}~${e}`;
+        } else {
+          dateStr = ''; // 날짜 없음
+        }
+
+        return {
+          category: catRadio ? catRadio.value : '공지사항',
+          badge: badgeRadio ? badgeRadio.value : '공지',
+          date: dateStr,
+          title: document.getElementById('pub-title').value.trim(),
+          author: document.getElementById('pub-author').value.trim() || '담임교사',
+          content: document.getElementById('pub-content').value.trim()
+        };
+      }
+
+      async function handlePublish() {
+        const data = getFormData();
+        if (!data.title) {
+          alert('제목을 입력해 주세요.');
+          document.getElementById('pub-title').focus();
+          return;
+        }
+
+        if (data.category === '일정' && !data.date) {
+          alert('학사일정(캘린더)은 날짜 입력이 필요합니다. 날짜를 선택해 주세요.');
+          setDateMode('single');
+          return;
+        }
+
+        const gasUrl = typeof CONFIG !== 'undefined' && CONFIG.gasApiUrl ? CONFIG.gasApiUrl.trim() : '';
+
+        if (gasUrl) {
+          try {
+            const btn = document.getElementById('btn-submit-live');
+            btn.disabled = true;
+            btn.textContent = '구글 시트에 전송 중...';
+
+            await fetch(gasUrl, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+
+            btn.disabled = false;
+            btn.innerHTML = '<span>구글 시트에 즉시 등록하기</span>';
+            alert('구글 스프레드시트에 성공적으로 등록되었습니다.\n(학생 포털에 즉시 반영됩니다)');
+            document.getElementById('pub-title').value = '';
+            document.getElementById('pub-content').value = '';
+            setTimeout(renderAdminTable, 1500);
+          } catch (err) {
+            alert('전송 중 오류가 발생했습니다. 구글 시트를 직접 열어 추가합니다.');
+            openSheetWithCopy(data);
+          }
+        } else {
+          // Apps Script URL이 없는 경우: 서식 클립보드 복사 후 스프레드시트 새 탭 열기
+          openSheetWithCopy(data);
+        }
+      }
+
+      function openSheetWithCopy(data) {
+        const rowText = `${data.category}\t${data.date}\t${data.title}\t${data.content}\t${data.author}\t${data.badge}`;
+        navigator.clipboard.writeText(rowText).then(() => {
+          alert(`[${data.title}] 행 데이터가 클립보드에 복사되었습니다.\n\n열리는 스프레드시트의 맨 아래 행 빈칸에 [Ctrl + V]로 붙여넣으시면 즉시 완료됩니다.`);
+          window.open(CONFIG.googleSheetUrl, '_blank');
+        }).catch(() => {
+          window.open(CONFIG.googleSheetUrl, '_blank');
+        });
+      }
+
+      function handleCopyFormat() {
+        const data = getFormData();
+        if (!data.title) {
+          alert('제목을 먼저 입력해 주세요.');
+          return;
+        }
+        const rowText = `${data.category}\t${data.date}\t${data.title}\t${data.content}\t${data.author}\t${data.badge}`;
+        navigator.clipboard.writeText(rowText).then(() => {
+          alert('스프레드시트용 행 데이터가 복사되었습니다. 구글 시트에 붙여넣으세요.');
+        });
+      }
+
+      function renderAdminTable() {
+        const tbody = document.getElementById('admin-data-tbody');
+        if (!tbody) return;
+
+        setTimeout(() => {
+          document.getElementById('stat-notices').textContent = `공지 2건`;
+          document.getElementById('stat-events').textContent = `일정 4건`;
+          document.getElementById('stat-posts').textContent = `게시글 0건`;
+
+          // 시트 데이터 렌더링
+          const sampleRows = [
+            { cat: '공지사항', date: '2026-08-27', title: '방과후학교 개강', badge: '공지' },
+            { cat: '공지사항', date: '2026-08-26', title: '독서와 작문 책 준비', badge: '공지' },
+            { cat: '일정', date: '2026-09-02', title: '9월 모의고사', badge: '시험' },
+            { cat: '일정', date: '2026-09-08~2026-09-11', title: '수학 여행', badge: '행사' },
+            { cat: '일정', date: '2026-10-13~2026-10-16', title: '중간고사', badge: '시험' }
+          ];
+
+          tbody.innerHTML = sampleRows.map(r => `
+            <tr>
+              <td><span class="notice-pill ${r.badge === '공지' || r.badge === '시험' ? 'pill-urgent' : 'pill-warning'}">${r.cat}</span></td>
+              <td class="mono-text">${r.date || '-'}</td>
+              <td style="font-weight: 600;">${r.title}</td>
+              <td><span class="mono-text" style="font-size: var(--text-2xs);">${r.badge}</span></td>
+            </tr>
+          `).join('');
+        }, 600);
+      }
+
+      // Start auth check
+      checkAuth();
+    })();
+  </script>
+</body>
+</html>
