@@ -837,7 +837,7 @@
 
     if (filtered.length === 0) {
       listEl.innerHTML = `
-        <div class="empty-placeholder" style="grid-column: 1 / -1; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+        <div class="empty-placeholder" style="grid-column: 1 / -1;">
           <p>등록된 게시글이 없습니다.</p>
         </div>
       `;

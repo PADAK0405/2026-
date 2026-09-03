@@ -1,20 +1,23 @@
 @echo off
-chcp 65001 > nul
-echo ========================================================
-echo   2026 학급 포털 - GitHub 푸시 (Git Push)
-echo ========================================================
+title GitHub Push - 2026 Classroom Portal
+echo ===================================================
+echo   [GitHub Push] 2026 Classroom Portal
+echo ===================================================
 echo.
-echo GitHub 인증 및 푸시를 진행합니다...
+echo Pushing latest commits to GitHub...
 echo.
 
-git push -u origin main
+git push origin main
 
 echo.
 if %ERRORLEVEL% equ 0 (
-    echo [성공] GitHub에 정상적으로 푸시되었습니다!
+    echo ===================================================
+    echo   [SUCCESS] GitHub push completed successfully!
+    echo ===================================================
 ) else (
-    echo [오류] 푸시 중 문제가 발생했습니다. 에러 메시지를 확인해 주세요.
+    echo ===================================================
+    echo   [ERROR] Git push failed. Please check above error.
+    echo ===================================================
 )
 echo.
-echo 창을 닫으려면 아무 키나 누르세요...
-pause > nul
+pause

@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2학년 2반 학급 포털 | 관리자 센터</title>
   <meta name="description" content="2026학년도 2학년 2반 학급 포털 관리자 전용 대시보드">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="style.css">
@@ -40,25 +43,27 @@
       padding: var(--space-md);
     }
     .admin-lock-card {
-      background-color: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-xl);
+      background-color: var(--surface-dominant);
+      border: 0px;
+      border-radius: var(--radius-max);
+      padding: var(--space-32);
       max-width: 380px;
       width: 100%;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-modal);
       text-align: center;
     }
     .admin-lock-title {
-      font-size: var(--text-lg);
-      font-weight: 700;
-      margin-bottom: var(--space-xs);
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: var(--weight-headline);
+      margin-bottom: var(--space-8);
       color: var(--color-ink);
     }
     .admin-lock-desc {
-      font-size: var(--text-xs);
+      font-size: var(--text-caption);
+      font-weight: var(--weight-subhead);
       color: var(--color-ink-muted);
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-24);
     }
     .admin-pin-input {
       width: 100%;
@@ -67,23 +72,24 @@
       font-size: 1.5rem;
       letter-spacing: 0.35em;
       padding: 0.6rem;
-      border: 2px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background-color: var(--color-paper-subtle);
+      border: 0px;
+      border-radius: var(--radius-micro);
+      background-color: var(--surface-secondary);
+      box-shadow: var(--shadow-surface);
       color: var(--color-ink);
-      margin-bottom: var(--space-md);
-      transition: border-color var(--dur-fast) var(--ease-out);
+      margin-bottom: var(--space-16);
+      transition: box-shadow var(--dur-fast) var(--ease-out);
     }
     .admin-pin-input:focus {
       outline: none;
-      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary);
     }
     .admin-error-msg {
       color: var(--color-urgent);
-      font-size: var(--text-xs);
-      margin-bottom: var(--space-sm);
+      font-size: var(--text-caption);
+      margin-bottom: var(--space-8);
       min-height: 1.2em;
-      font-weight: 600;
+      font-weight: var(--weight-meta);
     }
     .admin-btn-block {
       width: 100%;
@@ -95,7 +101,7 @@
     .admin-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-      gap: var(--space-xl);
+      gap: var(--space-24);
       align-items: start;
     }
     @media (max-width: 980px) {
@@ -107,11 +113,11 @@
       display: flex;
       flex-direction: column;
       gap: var(--space-2xs);
-      margin-bottom: var(--space-md);
+      margin-bottom: var(--space-16);
     }
     .admin-label {
-      font-size: var(--text-xs);
-      font-weight: 700;
+      font-size: var(--text-caption);
+      font-weight: var(--weight-meta);
       color: var(--color-ink-secondary);
       display: flex;
       align-items: center;
@@ -120,18 +126,18 @@
     .admin-input, .admin-textarea, .admin-select {
       width: 100%;
       padding: 0.55rem 0.75rem;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background-color: var(--color-paper-subtle);
+      border: 0px;
+      border-radius: var(--radius-micro);
+      background-color: var(--surface-dominant);
+      box-shadow: var(--shadow-surface);
       color: var(--color-ink);
       font-family: inherit;
-      font-size: var(--text-sm);
-      transition: border-color var(--dur-fast) var(--ease-out);
+      font-size: var(--text-caption);
+      transition: box-shadow var(--dur-fast) var(--ease-out);
     }
     .admin-input:focus, .admin-textarea:focus, .admin-select:focus {
       outline: none;
-      border-color: var(--color-primary);
-      background-color: var(--color-surface);
+      box-shadow: 0 0 0 2px var(--color-primary);
     }
     .admin-textarea {
       min-height: 110px;
@@ -140,7 +146,7 @@
     }
     .admin-radio-pills {
       display: flex;
-      gap: var(--space-xs);
+      gap: var(--space-8);
       flex-wrap: wrap;
     }
     .admin-radio-pill {
@@ -148,11 +154,12 @@
       align-items: center;
       gap: 0.35rem;
       padding: 0.35rem 0.75rem;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xs);
-      background-color: var(--color-surface);
-      font-size: var(--text-xs);
-      font-weight: 600;
+      border: 0px;
+      border-radius: var(--radius-micro);
+      background-color: var(--surface-dominant);
+      box-shadow: var(--shadow-surface);
+      font-size: var(--text-caption);
+      font-weight: var(--weight-meta);
       color: var(--color-ink-secondary);
       cursor: pointer;
       user-select: none;
@@ -162,38 +169,39 @@
       display: none;
     }
     .admin-radio-pill.active {
-      border-color: var(--color-primary);
-      background-color: var(--color-primary-light);
-      color: var(--color-primary-ink);
+      background-color: var(--color-primary);
+      color: var(--accent-contrast);
     }
     .admin-date-dual {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      gap: var(--space-xs);
+      gap: var(--space-8);
     }
     .admin-stat-chip {
       font-family: var(--font-mono);
-      font-size: var(--text-xs);
+      font-size: var(--text-caption);
+      font-weight: var(--weight-meta);
+      letter-spacing: var(--tracking-meta);
       padding: 0.2rem 0.5rem;
-      border-radius: var(--radius-xs);
-      background-color: var(--color-paper-subtle);
-      border: 1px solid var(--color-border);
+      border-radius: var(--radius-micro);
+      background-color: var(--color-paper-muted);
+      border: 0px;
       color: var(--color-ink);
     }
     .admin-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: var(--text-xs);
+      font-size: var(--text-caption);
     }
     .admin-table th, .admin-table td {
       padding: 0.55rem 0.65rem;
       text-align: left;
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-paper-muted);
     }
     .admin-table th {
-      background-color: var(--color-paper-subtle);
-      font-weight: 700;
+      background-color: var(--color-paper-muted);
+      font-weight: var(--weight-meta);
       color: var(--color-ink-secondary);
     }
   </style>
@@ -216,7 +224,7 @@
         </button>
       </form>
 
-      <div style="margin-top: var(--space-lg);">
+      <div style="margin-top: var(--space-24);">
         <a href="index.html" class="mono-text" style="font-size: var(--text-2xs); color: var(--color-ink-muted);">[학급 포털 메인으로 돌아가기]</a>
       </div>
     </div>
@@ -230,7 +238,7 @@
       <div class="brand-wrapper">
         <div class="brand-emblem" style="background: var(--color-urgent); color: white;">ADM</div>
         <div class="brand-title-group">
-          <h1 id="portal-title">2학년 2반 관리자 센터</h1>
+          <span id="portal-title">2학년 2반 관리자 센터</span>
           <span id="class-badge" class="mono-text">선생님 & 학급임원 전용</span>
         </div>
       </div>
@@ -266,6 +274,12 @@
   <main id="admin-main-content" class="main-wrapper">
     <div class="container">
 
+      <!-- Editorial Page Title / Display H1 -->
+      <header class="page-headline-block">
+        <h1 class="display-h1">관리자 센터</h1>
+        <p class="subhead">구글 스프레드시트 실시간 연동 및 학급 데이터베이스 관리 콘솔입니다.</p>
+      </header>
+
       <!-- Status Strip -->
       <section class="status-deck" aria-label="관리자 현황">
         <div class="status-deck-left">
@@ -291,14 +305,14 @@
           </div>
 
           <!-- Google Apps Script Web App URL 설정 바 -->
-          <div style="background-color: var(--color-paper-subtle); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-sm) var(--space-md); margin-top: var(--space-md); margin-bottom: var(--space-md);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2xs); flex-wrap: wrap; gap: var(--space-xs);">
+          <div style="background-color: var(--surface-secondary); border: 0px; border-radius: var(--radius-micro); padding: var(--space-16); margin-top: var(--space-16); margin-bottom: var(--space-16); box-shadow: var(--shadow-surface);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2xs); flex-wrap: wrap; gap: var(--space-8);">
               <label for="admin-gas-url" class="admin-label" style="margin-bottom: 0;">Google Apps Script 웹 앱 URL (시트 직접 저장)</label>
               <span id="gas-status-badge" class="mono-text" style="font-size: var(--text-2xs); font-weight: 700;">확인 중...</span>
             </div>
-            <div style="display: flex; gap: var(--space-xs);">
-              <input type="url" id="admin-gas-url" class="admin-input" style="font-size: var(--text-xs); padding: 0.4rem 0.6rem;" placeholder="https://script.google.com/macros/s/.../exec">
-              <button type="button" id="btn-save-gas-url" class="btn-secondary" style="white-space: nowrap; padding: 0.4rem 0.85rem; font-size: var(--text-xs); font-weight: 600;">저장</button>
+            <div style="display: flex; gap: var(--space-8);">
+              <input type="url" id="admin-gas-url" class="admin-input" style="font-size: var(--text-caption); padding: 0.45rem 0.65rem;" placeholder="https://script.google.com/macros/s/.../exec">
+              <button type="button" id="btn-save-gas-url" class="btn-secondary" style="white-space: nowrap; padding: 0.45rem 0.85rem; font-size: var(--text-caption); font-weight: 600;">저장</button>
             </div>
           </div>
 
