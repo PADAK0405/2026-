@@ -21,7 +21,7 @@ const CONFIG = {
   // 추천 관리자 비밀번호: 202622 (2026학년도 2학년 2반)
   adminPin: "202622",
 
-  // [Google Apps Script Web App API URL - 선택 사항]
-  // 스프레드시트에 Apps Script 배포 시 여기에 URL을 넣으면 관리자 페이지에서 1클릭으로 시트에 직접 등록됩니다.
-  gasApiUrl: ""
+  // [Google Apps Script Web App API URL]
+  // 스프레드시트 배포 웹 앱 URL - 관리자 페이지에서 1클릭으로 시트에 직접 등록됩니다.
+  gasApiUrl: "https://script.google.com/macros/s/AKfycbyObDub88biLBK596l4JwYeKGUmn4YlY_C_mvN8MVmMqoSjWhWGEq4So18Kz9r2f7uh/exec"
 };
