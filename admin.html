@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,11 @@
   <meta name="description" content="2026학년도 2학년 2반 학급 포털 관리자 전용 대시보드">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="style.css">
   <style>
@@ -19,12 +23,15 @@
     body[data-page="admin"] #admin-main-content {
       display: none !important;
     }
+
     body[data-page="admin"].is-authenticated .site-header {
       display: block !important;
     }
+
     body[data-page="admin"].is-authenticated #admin-main-content {
       display: block !important;
     }
+
     body[data-page="admin"].is-authenticated #admin-lock-screen {
       display: none !important;
     }
@@ -42,6 +49,7 @@
       z-index: 99999;
       padding: var(--space-md);
     }
+
     .admin-lock-card {
       background-color: var(--surface-dominant);
       border: 0px;
@@ -52,6 +60,7 @@
       box-shadow: var(--shadow-modal);
       text-align: center;
     }
+
     .admin-lock-title {
       font-family: var(--font-display);
       font-size: var(--text-h2);
@@ -59,12 +68,14 @@
       margin-bottom: var(--space-8);
       color: var(--color-ink);
     }
+
     .admin-lock-desc {
       font-size: var(--text-caption);
       font-weight: var(--weight-subhead);
       color: var(--color-ink-muted);
       margin-bottom: var(--space-24);
     }
+
     .admin-pin-input {
       width: 100%;
       text-align: center;
@@ -80,10 +91,12 @@
       margin-bottom: var(--space-16);
       transition: box-shadow var(--dur-fast) var(--ease-out);
     }
+
     .admin-pin-input:focus {
       outline: none;
       box-shadow: 0 0 0 2px var(--color-primary);
     }
+
     .admin-error-msg {
       color: var(--color-urgent);
       font-size: var(--text-caption);
@@ -91,6 +104,7 @@
       min-height: 1.2em;
       font-weight: var(--weight-meta);
     }
+
     .admin-btn-block {
       width: 100%;
       justify-content: center;
@@ -104,17 +118,20 @@
       gap: var(--space-24);
       align-items: start;
     }
+
     @media (max-width: 980px) {
       .admin-grid {
         grid-template-columns: minmax(0, 1fr);
       }
     }
+
     .admin-form-row {
       display: flex;
       flex-direction: column;
       gap: var(--space-2xs);
       margin-bottom: var(--space-16);
     }
+
     .admin-label {
       font-size: var(--text-caption);
       font-weight: var(--weight-meta);
@@ -123,7 +140,10 @@
       align-items: center;
       justify-content: space-between;
     }
-    .admin-input, .admin-textarea, .admin-select {
+
+    .admin-input,
+    .admin-textarea,
+    .admin-select {
       width: 100%;
       padding: 0.55rem 0.75rem;
       border: 0px;
@@ -135,20 +155,26 @@
       font-size: var(--text-caption);
       transition: box-shadow var(--dur-fast) var(--ease-out);
     }
-    .admin-input:focus, .admin-textarea:focus, .admin-select:focus {
+
+    .admin-input:focus,
+    .admin-textarea:focus,
+    .admin-select:focus {
       outline: none;
       box-shadow: 0 0 0 2px var(--color-primary);
     }
+
     .admin-textarea {
       min-height: 110px;
       resize: vertical;
       line-height: var(--leading-relaxed);
     }
+
     .admin-radio-pills {
       display: flex;
       gap: var(--space-8);
       flex-wrap: wrap;
     }
+
     .admin-radio-pill {
       display: inline-flex;
       align-items: center;
@@ -165,19 +191,23 @@
       user-select: none;
       transition: all var(--dur-fast) var(--ease-out);
     }
+
     .admin-radio-pill input {
       display: none;
     }
+
     .admin-radio-pill.active {
       background-color: var(--color-primary);
       color: var(--accent-contrast);
     }
+
     .admin-date-dual {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
       gap: var(--space-8);
     }
+
     .admin-stat-chip {
       font-family: var(--font-mono);
       font-size: var(--text-caption);
@@ -189,16 +219,20 @@
       border: 0px;
       color: var(--color-ink);
     }
+
     .admin-table {
       width: 100%;
       border-collapse: collapse;
       font-size: var(--text-caption);
     }
-    .admin-table th, .admin-table td {
+
+    .admin-table th,
+    .admin-table td {
       padding: 0.55rem 0.65rem;
       text-align: left;
       border-bottom: 1px solid var(--color-paper-muted);
     }
+
     .admin-table th {
       background-color: var(--color-paper-muted);
       font-weight: var(--weight-meta);
@@ -206,6 +240,7 @@
     }
   </style>
 </head>
+
 <body data-page="admin">
 
   <!-- =========================================================================
@@ -215,9 +250,10 @@
     <div class="admin-lock-card">
       <h2 class="admin-lock-title">관리자 인증</h2>
       <p class="admin-lock-desc">학급 포털 관리자 센터 접근을 위해 6자리 PIN 번호를 입력하세요.</p>
-      
+
       <form id="admin-pin-form" onsubmit="return false;">
-        <input type="password" id="admin-pin-input" class="admin-pin-input" maxlength="10" inputmode="numeric" placeholder="••••••" autofocus autocomplete="off">
+        <input type="password" id="admin-pin-input" class="admin-pin-input" maxlength="10" inputmode="numeric"
+          placeholder="••••••" autofocus autocomplete="off">
         <div id="admin-error-msg" class="admin-error-msg"></div>
         <button type="submit" id="admin-login-btn" class="btn-primary admin-btn-block">
           <span>인증하기</span>
@@ -225,7 +261,8 @@
       </form>
 
       <div style="margin-top: var(--space-24);">
-        <a href="index.html" class="mono-text" style="font-size: var(--text-2xs); color: var(--color-ink-muted);">[학급 포털 메인으로 돌아가기]</a>
+        <a href="index.html" class="mono-text" style="font-size: var(--text-2xs); color: var(--color-ink-muted);">[학급 포털
+          메인으로 돌아가기]</a>
       </div>
     </div>
   </div>
@@ -247,20 +284,24 @@
         <a href="index.html" class="nav-link">
           <span>학생 포털 홈</span>
         </a>
-        <a href="https://docs.google.com/spreadsheets/d/1fs-42tnD-60AkSjjE4mUrJIEe-1q0Na7BK2xPn4cqWg/edit?gid=0#gid=0" id="admin-sheet-link" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <a href="https://docs.google.com/spreadsheets/d/1fs-42tnD-60AkSjjE4mUrJIEe-1q0Na7BK2xPn4cqWg/edit?gid=0#gid=0"
+          id="admin-sheet-link" target="_blank" rel="noopener noreferrer" class="nav-link">
           <span>시트 편집 바로가기 ↗</span>
         </a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNpYNzPwAeEYAdoV9FRGV41Hun-ddPtkYnTIRdIU3GQez51A/viewform" id="admin-form-link" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNpYNzPwAeEYAdoV9FRGV41Hun-ddPtkYnTIRdIU3GQez51A/viewform"
+          id="admin-form-link" target="_blank" rel="noopener noreferrer" class="nav-link">
           <span>건의함 바로가기 ↗</span>
         </a>
       </nav>
 
       <div class="nav-actions">
-        <button id="admin-logout-btn" class="btn-secondary" style="padding: 0.25rem 0.55rem; font-size: var(--text-2xs);">
+        <button id="admin-logout-btn" class="btn-secondary"
+          style="padding: 0.25rem 0.55rem; font-size: var(--text-2xs);">
           <span>로그아웃</span>
         </button>
         <button id="theme-toggle" class="btn-icon-square" aria-label="테마 변경">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
@@ -284,8 +325,6 @@
       <section class="status-deck" aria-label="관리자 현황">
         <div class="status-deck-left">
           <span class="status-indicator-dot"></span>
-          <span class="status-deck-title">구글 스프레드시트 실시간 연결 완료</span>
-          <span class="status-deck-desc">작성한 데이터는 학급 포털 학생 화면에 즉시 동기화됩니다.</span>
         </div>
         <div class="status-deck-right">
           <span id="stat-notices" class="admin-stat-chip">공지 0건</span>
@@ -305,19 +344,26 @@
           </div>
 
           <!-- Google Apps Script Web App URL 설정 바 -->
-          <div style="background-color: var(--surface-secondary); border: 0px; border-radius: var(--radius-micro); padding: var(--space-16); margin-top: var(--space-16); margin-bottom: var(--space-16); box-shadow: var(--shadow-surface);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2xs); flex-wrap: wrap; gap: var(--space-8);">
-              <label for="admin-gas-url" class="admin-label" style="margin-bottom: 0;">Google Apps Script 웹 앱 URL (시트 직접 저장)</label>
-              <span id="gas-status-badge" class="mono-text" style="font-size: var(--text-2xs); font-weight: 700;">확인 중...</span>
+          <div
+            style="background-color: var(--surface-secondary); border: 0px; border-radius: var(--radius-micro); padding: var(--space-16); margin-top: var(--space-16); margin-bottom: var(--space-16); box-shadow: var(--shadow-surface);">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2xs); flex-wrap: wrap; gap: var(--space-8);">
+              <label for="admin-gas-url" class="admin-label" style="margin-bottom: 0;">Google Apps Script 웹 앱 URL (시트 직접
+                저장)</label>
+              <span id="gas-status-badge" class="mono-text" style="font-size: var(--text-2xs); font-weight: 700;">확인
+                중...</span>
             </div>
             <div style="display: flex; gap: var(--space-8);">
-              <input type="url" id="admin-gas-url" class="admin-input" style="font-size: var(--text-caption); padding: 0.45rem 0.65rem;" placeholder="https://script.google.com/macros/s/.../exec">
-              <button type="button" id="btn-save-gas-url" class="btn-secondary" style="white-space: nowrap; padding: 0.45rem 0.85rem; font-size: var(--text-caption); font-weight: 600;">저장</button>
+              <input type="url" id="admin-gas-url" class="admin-input"
+                style="font-size: var(--text-caption); padding: 0.45rem 0.65rem;"
+                placeholder="https://script.google.com/macros/s/.../exec">
+              <button type="button" id="btn-save-gas-url" class="btn-secondary"
+                style="white-space: nowrap; padding: 0.45rem 0.85rem; font-size: var(--text-caption); font-weight: 600;">저장</button>
             </div>
           </div>
 
           <form id="quick-publish-form" onsubmit="return false;" style="margin-top: var(--space-md);">
-            
+
             <!-- 1. 구분 선택 -->
             <div class="admin-form-row">
               <label class="admin-label">1. 항목 구분 (Category)</label>
@@ -339,10 +385,10 @@
               <label class="admin-label">2. 뱃지 라벨 및 색상 (Badge)</label>
               <div class="admin-radio-pills" id="badge-pills">
                 <label class="admin-radio-pill active" data-val="공지" style="color: var(--color-urgent);">
-                  <input type="radio" name="pub-badge" value="공지" checked> 공지 (빨간색)
+                  <input type="radio" name="pub-badge" value="공지" checked> 공지
                 </label>
                 <label class="admin-radio-pill" data-val="알림" style="color: var(--color-warning-ink);">
-                  <input type="radio" name="pub-badge" value="알림"> 알림 (노란색)
+                  <input type="radio" name="pub-badge" value="알림"> 알림
                 </label>
                 <label class="admin-radio-pill" data-val="시험" style="color: var(--color-urgent);">
                   <input type="radio" name="pub-badge" value="시험"> 시험 (D-Day 연동)
@@ -356,7 +402,7 @@
             <!-- 3. 날짜 설정 토글 (상시공지 / 단일일자 / 연속기간) -->
             <div class="admin-form-row">
               <label class="admin-label">3. 날짜 설정 (Date)</label>
-              
+
               <div class="admin-radio-pills" id="date-mode-pills">
                 <label class="admin-radio-pill active" data-mode="none">
                   <input type="radio" name="pub-date-mode" value="none" checked> 날짜 없음 (상시/일반 공지)
@@ -384,23 +430,25 @@
 
             <!-- 4. 제목 입력 -->
             <div class="admin-form-row">
-              <label class="admin-label" for="pub-title">4. 제목 (Title)</label>
-              <input type="text" id="pub-title" class="admin-input" placeholder="예: 2학기 중간고사 시험범위 안내, 9월 모의고사 등" required>
+              <label class="admin-label" for="pub-title">4. 제목</label>
+              <input type="text" id="pub-title" class="admin-input" placeholder="예: 2학기 중간고사 시험범위 안내, 9월 모의고사 등"
+                required>
             </div>
 
             <!-- 5. 작성자 입력 -->
             <div class="admin-form-row">
-              <label class="admin-label" for="pub-author">5. 작성자 (Author)</label>
+              <label class="admin-label" for="pub-author">5. 작성자</label>
               <input type="text" id="pub-author" class="admin-input" value="담임교사" placeholder="담임교사 / 이건호 / 학급알리미">
             </div>
 
             <!-- 6. 상세 내용 입력 -->
             <div class="admin-form-row">
               <label class="admin-label" for="pub-content">
-                <span>6. 상세 본문 내용 (Content)</span>
+                <span>6. 상세 본문 내용</span>
                 <span style="font-size: var(--text-2xs); color: var(--color-ink-muted);">일정일 경우 비워두셔도 됩니다</span>
               </label>
-              <textarea id="pub-content" class="admin-textarea" placeholder="상세 공지사항 본문 내용을 입력하세요. URL 링크는 자동으로 클릭 가능한 하이퍼링크로 치환됩니다."></textarea>
+              <textarea id="pub-content" class="admin-textarea"
+                placeholder="상세 공지사항 본문 내용을 입력하세요. URL 링크는 자동으로 클릭 가능한 하이퍼링크로 치환됩니다."></textarea>
             </div>
 
             <!-- Action Buttons -->
@@ -415,7 +463,7 @@
 
         <!-- Right Column: Live Data Table -->
         <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
-          
+
           <!-- Live Current Data Overview -->
           <section class="workbench-panel">
             <div class="panel-header">
@@ -437,15 +485,15 @@
                 </thead>
                 <tbody id="admin-data-tbody">
                   <tr>
-                    <td colspan="4" style="text-align: center; color: var(--color-ink-muted); padding: var(--space-md);">데이터 로딩 중...</td>
+                    <td colspan="4"
+                      style="text-align: center; color: var(--color-ink-muted); padding: var(--space-md);">데이터 로딩 중...
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
             <div style="margin-top: var(--space-md); text-align: right;">
-              <a href="https://docs.google.com/spreadsheets/d/1fs-42tnD-60AkSjjE4mUrJIEe-1q0Na7BK2xPn4cqWg/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" class="panel-action-link">
-                <span>스프레드시트에서 직접 수정 / 삭제하기 ↗</span>
               </a>
             </div>
           </section>
@@ -725,10 +773,10 @@
           btn.disabled = false;
           btn.innerHTML = '<span>구글 시트에 즉시 등록하기</span>';
           alert(`[${data.title}] 항목이 구글 스프레드시트에 직접 저장되었습니다!\n학생 포털 화면에 실시간으로 반영됩니다.`);
-          
+
           document.getElementById('pub-title').value = '';
           document.getElementById('pub-content').value = '';
-          
+
           setTimeout(() => {
             renderAdminTable();
           }, 1200);
@@ -769,4 +817,5 @@
     })();
   </script>
 </body>
+
 </html>
