@@ -1006,6 +1006,40 @@
   }
 
   // =========================================================================
+  // 6.5. VengeanceUI Modern Cards Interaction (Clean 3D Tilt & Specular Glare)
+  // =========================================================================
+  function initVerseCards() {
+    const cards = document.querySelectorAll('.verse-card-front');
+    cards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        // Dynamic cursor coordinate tracking for specular glare
+        const px = ((x / rect.width) * 100).toFixed(1);
+        const py = ((y / rect.height) * 100).toFixed(1);
+        card.style.setProperty('--mouse-x', `${px}%`);
+        card.style.setProperty('--mouse-y', `${py}%`);
+
+        // Smooth 3D tilt (max 8 degrees, never intersects or clips)
+        const deltaX = (x - centerX) / centerX;
+        const deltaY = (y - centerY) / centerY;
+        const rotateX = deltaY * -8;
+        const rotateY = deltaX * 8;
+
+        card.style.transform = `perspective(1000px) translateY(-4px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  }
+
+  // =========================================================================
   // 7. App Initialization
   // =========================================================================
   document.addEventListener('DOMContentLoaded', () => {
@@ -1016,6 +1050,7 @@
 
     if (state.page === 'home') {
       initCalendarControls();
+      initVerseCards();
     } else if (state.page === 'notice') {
       initNoticePageControls();
     } else if (state.page === 'board') {

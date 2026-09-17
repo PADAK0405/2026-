@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,15 @@
   <meta name="description" content="2026학년도 2학년 2반 학급 자유게시판 - 분실물, 선택과목 질문, 소통">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body data-page="board">
 
   <!-- =========================================================================
@@ -37,7 +42,8 @@
         <a href="board.html" class="nav-link active" aria-current="page">
           <span>자유게시판</span>
         </a>
-        <a href="https://forms.google.com" id="suggestion-link" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <a href="https://forms.google.com" id="suggestion-link" target="_blank" rel="noopener noreferrer"
+          class="nav-link">
           <span>건의함 ↗</span>
         </a>
       </nav>
@@ -45,7 +51,8 @@
       <div class="nav-actions">
         <div id="today-date-text" class="mono-text">2026.08.31 (월)</div>
         <button id="theme-toggle" class="btn-icon-square" aria-label="테마 변경">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
@@ -58,7 +65,7 @@
        ========================================================================= -->
   <main class="main-wrapper">
     <div class="container">
-      
+
       <!-- Editorial Page Title / Display H1 -->
       <header class="page-headline-block">
         <h1 class="display-h1">학급 자유게시판</h1>
@@ -80,11 +87,13 @@
       <section class="controls-bar" aria-label="검색 및 카테고리 필터">
         <!-- Search Input with Keyboard Shortcut Hint -->
         <div class="search-input-wrapper">
-          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="search" id="board-search-input" class="search-input" placeholder="게시글 제목, 본문, 작성자 검색..." autocomplete="off">
+          <input type="search" id="board-search-input" class="search-input" placeholder="게시글 제목, 본문, 작성자 검색..."
+            autocomplete="off">
           <span class="search-kbd-hint">/</span>
         </div>
 
@@ -133,7 +142,8 @@
           <span id="modal-badge" class="notice-pill pill-purple">게시글</span>
         </div>
         <button id="modal-close-btn" class="modal-close-btn" aria-label="닫기">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -166,7 +176,8 @@
   <!-- Site Footer (Hallmark Ft5 Statement Archetype) -->
   <footer class="site-footer">
     <div class="container footer-content">
-      <p class="mono-text">© 2026 2학년 2반 · <a href="admin.html" style="color: var(--color-ink-muted); text-decoration: none;">🔒 관리자</a></p>
+      <p class="mono-text">© 2026 2학년 2반 · <a href="admin.html"
+          style="color: var(--color-ink-muted); text-decoration: none;">🔒 관리자</a></p>
     </div>
   </footer>
 
@@ -174,4 +185,5 @@
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

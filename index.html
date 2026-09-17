@@ -8,8 +8,11 @@
   <meta name="description" content="2026학년도 2학년 2반 학급 포털 대시보드 - 실시간 공지 및 학사일정">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -68,15 +71,16 @@
 
       <!-- Editorial Page Title / Display H1 -->
       <header class="page-headline-block">
+        <div class="headline-sub-badge mono-text">GAON HIGH SCHOOL · CLASS 2-2</div>
         <h1 class="display-h1">2026 2학년 2반</h1>
-        <p class="subhead">오늘의 주요 공지사항과 월간 학사일정을 실시간으로 확인하는 공간입니다.</p>
+        <p class="subhead">오늘의 실시간 급식과 주요 학급 공지사항, 월간 학사일정을 확인하는 공간입니다.</p>
       </header>
 
-      <!-- High-Density Status Deck (Authentic Classroom Command Strip) -->
+      <!-- High-Density Status Deck -->
       <section class="status-deck" aria-label="학급 현황 바">
         <div class="status-deck-left">
           <span class="status-indicator-dot" aria-hidden="true"></span>
-          <span class="status-deck-title">2026학년도 2학기 알림마당</span>
+          <span class="status-deck-title">2026학년도 2학기 학급 대시보드</span>
         </div>
         <div class="status-deck-right">
           <span id="next-exam-chip" class="d-day-chip mono-text"></span>
@@ -86,107 +90,179 @@
       <!-- 2-Column Workbench Grid -->
       <div class="workbench-grid">
 
-        <!-- Left: Recent Notice Board Feed -->
-        <section class="workbench-panel" aria-labelledby="notice-heading">
-          <div class="panel-header">
-            <div class="panel-title-group">
-              <h2 id="notice-heading" class="panel-title">공지사항</h2>
-              <span id="notice-count" class="panel-count-badge">[0]</span>
-            </div>
-            <a href="notice.html" class="panel-action-link" aria-label="공지사항 전체보기">
-              <span>전체보기</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </a>
-          </div>
-
-          <!-- Dynamic Notice List -->
-          <div id="notice-list" class="notice-feed-list">
-            <!-- JavaScript dynamically renders recent notices here -->
-          </div>
-        </section>
-
-        <!-- Right: Monthly Academic Calendar Engine -->
-        <section class="workbench-panel" aria-labelledby="calendar-heading">
-          <div class="panel-header">
-            <div class="panel-title-group">
-              <h2 id="calendar-heading" class="panel-title">학사일정</h2>
-            </div>
-            <!-- Calendar Navigation Buttons -->
-            <div class="calendar-nav-buttons">
-              <button id="previous-month" class="btn-cal-action" aria-label="이전 달">‹ 이전</button>
-              <button id="today-button" class="btn-cal-action btn-cal-today">오늘</button>
-              <button id="next-month" class="btn-cal-action" aria-label="다음 달">다음 ›</button>
-            </div>
-          </div>
-
-          <!-- Calendar Widget -->
-          <div class="calendar-widget">
-            <div class="calendar-nav-bar">
-              <span id="calendar-title" class="mono-text">2026.08</span>
-            </div>
-
-            <!-- Calendar Weekday Header -->
-            <div class="calendar-weekdays">
-              <span class="day-sun">일</span>
-              <span>월</span>
-              <span>화</span>
-              <span>수</span>
-              <span>목</span>
-              <span>금</span>
-              <span class="day-sat">토</span>
-            </div>
-
-            <!-- 7-Column Calendar Grid -->
-            <div id="calendar-grid">
-              <!-- JavaScript dynamically renders day cells here -->
-            </div>
-
-            <!-- Selected Date Schedule Panel -->
-            <div id="selected-date-panel">
-              <div class="selected-date-header">
-                <h3 id="selected-date-title">선택된 날짜 일정</h3>
+        <!-- Left Column: Notice Board Feed & Today Meal Card -->
+        <div class="workbench-col-left">
+          <!-- Recent Notice Board Feed -->
+          <section class="workbench-panel" aria-labelledby="notice-heading">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 id="notice-heading" class="panel-title">공지사항</h2>
+                <span id="notice-count" class="panel-count-badge">[0]</span>
               </div>
-              <div id="selected-date-list">
-                <!-- JavaScript dynamically renders selected date events here -->
+              <a href="notice.html" class="panel-action-link" aria-label="공지사항 전체보기">
+                <span>전체보기</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </a>
+            </div>
+
+            <!-- Dynamic Notice List -->
+            <div id="notice-list" class="notice-feed-list">
+              <!-- JavaScript dynamically renders recent notices here -->
+            </div>
+          </section>
+
+          <!-- Today Meal Card (Creative 3-Column Strip) -->
+          <section id="today-meal-card" class="workbench-panel meal-panel-container" aria-labelledby="meal-heading">
+            <!-- JavaScript dynamically renders meal widget here -->
+          </section>
+        </div>
+
+        <!-- Right Column: Monthly Academic Calendar Engine -->
+        <div class="workbench-col-right">
+          <section class="workbench-panel" aria-labelledby="calendar-heading">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 id="calendar-heading" class="panel-title">학사일정</h2>
+              </div>
+              <!-- Calendar Navigation Buttons -->
+              <div class="calendar-nav-buttons">
+                <button id="previous-month" class="btn-cal-action" aria-label="이전 달">‹ 이전</button>
+                <button id="today-button" class="btn-cal-action btn-cal-today">오늘</button>
+                <button id="next-month" class="btn-cal-action" aria-label="다음 달">다음 ›</button>
               </div>
             </div>
-          </div>
-        </section>
+
+            <!-- Calendar Widget -->
+            <div class="calendar-widget">
+              <div class="calendar-nav-bar">
+                <span id="calendar-title" class="mono-text">2026.08</span>
+              </div>
+
+              <!-- Calendar Weekday Header -->
+              <div class="calendar-weekdays">
+                <span class="day-sun">일</span>
+                <span>월</span>
+                <span>화</span>
+                <span>수</span>
+                <span>목</span>
+                <span>금</span>
+                <span class="day-sat">토</span>
+              </div>
+
+              <!-- 7-Column Calendar Grid -->
+              <div id="calendar-grid">
+                <!-- JavaScript dynamically renders day cells here -->
+              </div>
+
+              <!-- Selected Date Schedule Panel -->
+              <div id="selected-date-panel">
+                <div class="selected-date-header">
+                  <h3 id="selected-date-title">선택된 날짜 일정</h3>
+                </div>
+                <div id="selected-date-list">
+                  <!-- JavaScript dynamically renders selected date events here -->
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
 
       </div>
 
-      <!-- Quick Action Shelf -->
-      <section class="shortcuts-shelf" aria-label="빠른 바로가기">
-        <a href="notice.html" class="shortcut-pill-card">
-          <div class="shortcut-icon"
-            style="background-color: var(--color-primary-light); color: var(--color-primary-ink);">📢</div>
-          <div class="shortcut-info">
-            <span class="shortcut-title">공지사항 전용관</span>
-            <span class="shortcut-desc">검색 및 전체 필터링</span>
+      <!-- Quick Action Shelf (VengeanceUI Card Architecture) -->
+      <section class="shortcuts-shelf" aria-label="빠른 바로가기 및 주요 서비스">
+        <div class="shortcuts-shelf-header">
+          <div class="shortcuts-shelf-title-group">
+            <span class="shortcuts-shelf-badge mono-text">QUICK ACCESS</span>
+            <h2 class="shortcuts-shelf-title">주요 학급 서비스 바로가기</h2>
           </div>
-        </a>
+        </div>
 
-        <a href="board.html" class="shortcut-pill-card">
-          <div class="shortcut-icon"
-            style="background-color: var(--color-purple-light); color: var(--color-purple-ink);">💬</div>
-          <div class="shortcut-info">
-            <span class="shortcut-title">학급 자유게시판</span>
-            <span class="shortcut-desc">분실물, 선택과목 질문</span>
+        <div class="verse-cards-grid">
+          <!-- Verse Card 1: 공지사항 전용관 -->
+          <div class="verse-card-wrapper">
+            <a href="notice.html" class="verse-card-front card-notice" aria-label="공지사항 전용관으로 이동">
+              <div class="verse-card-glare" aria-hidden="true"></div>
+              <div class="verse-card-topbar">
+                <span class="verse-card-chip mono-text">01 · NOTICE HUB</span>
+                <span class="verse-card-badge-dot badge-green" title="실시간 공지 연동"></span>
+              </div>
+              <div class="verse-card-body">
+                <div class="verse-dock-tile">
+                  <span class="verse-dock-emoji" aria-hidden="true">📢</span>
+                  <span class="verse-dock-ping badge-green"></span>
+                </div>
+                <div class="verse-card-text">
+                  <h3 class="verse-card-title">공지사항 전용관</h3>
+                  <p class="verse-card-desc">검색 및 전체 필터링</p>
+                </div>
+              </div>
+              <div class="verse-card-footer">
+                <span class="verse-card-action-text mono-text">ENTER BOARD</span>
+                <span class="verse-card-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </a>
           </div>
-        </a>
 
-        <a href="https://forms.google.com" id="suggestion-link" target="_blank" rel="noopener noreferrer"
-          class="shortcut-pill-card">
-          <div class="shortcut-icon"
-            style="background-color: var(--color-warning-light); color: var(--color-warning-ink);">📮</div>
-          <div class="shortcut-info">
-            <span class="shortcut-title">익명 건의함</span>
-            <span class="shortcut-desc">선생님과 반장에게 의견 전달</span>
+          <!-- Verse Card 2: 학급 자유게시판 -->
+          <div class="verse-card-wrapper">
+            <a href="board.html" class="verse-card-front card-board" aria-label="학급 자유게시판으로 이동">
+              <div class="verse-card-glare" aria-hidden="true"></div>
+              <div class="verse-card-topbar">
+                <span class="verse-card-chip mono-text">02 · COMMUNITY</span>
+                <span class="verse-card-badge-dot badge-purple" title="자유 소통 공간"></span>
+              </div>
+              <div class="verse-card-body">
+                <div class="verse-dock-tile">
+                  <span class="verse-dock-emoji" aria-hidden="true">💬</span>
+                  <span class="verse-dock-ping badge-purple"></span>
+                </div>
+                <div class="verse-card-text">
+                  <h3 class="verse-card-title">학급 자유게시판</h3>
+                  <p class="verse-card-desc">분실물, 선택과목 질문</p>
+                </div>
+              </div>
+              <div class="verse-card-footer">
+                <span class="verse-card-action-text mono-text">JOIN CHAT</span>
+                <span class="verse-card-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </a>
           </div>
-        </a>
+
+          <!-- Verse Card 3: 익명 건의함 -->
+          <div class="verse-card-wrapper">
+            <a href="https://forms.google.com" id="shelf-suggestion-link" target="_blank" rel="noopener noreferrer" class="verse-card-front card-suggestion" aria-label="익명 건의함 설문지 새 창 열기">
+              <div class="verse-card-glare" aria-hidden="true"></div>
+              <div class="verse-card-topbar">
+                <span class="verse-card-chip mono-text">03 · CONFIDENTIAL</span>
+                <span class="verse-card-badge-dot badge-amber" title="100% 익명 보장"></span>
+              </div>
+              <div class="verse-card-body">
+                <div class="verse-dock-tile">
+                  <span class="verse-dock-emoji" aria-hidden="true">📮</span>
+                  <span class="verse-dock-ping badge-amber"></span>
+                </div>
+                <div class="verse-card-text">
+                  <h3 class="verse-card-title">익명 건의함</h3>
+                  <p class="verse-card-desc">선생님과 반장에게 의견 전달</p>
+                </div>
+              </div>
+              <div class="verse-card-footer">
+                <span class="verse-card-action-text mono-text">SUBMIT FORM</span>
+                <span class="verse-card-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </a>
+          </div>
+        </div>
       </section>
 
     </div>
@@ -236,12 +312,14 @@
   <!-- Site Footer (Hallmark Ft5 Statement Archetype) -->
   <footer class="site-footer">
     <div class="container footer-content">
-      <p class="mono-text">© 2026 2학년 2반 · <a href="admin.html" style="color: var(--color-ink-muted); text-decoration: none;">🔒 관리자</a></p>
+      <p class="mono-text">© 2026 2학년 2반 · <a href="admin.html"
+          style="color: var(--color-ink-muted); text-decoration: none;">🔒 관리자</a></p>
     </div>
   </footer>
 
   <!-- Scripts -->
   <script src="data.js"></script>
+  <script src="meal.js"></script>
   <script src="app.js"></script>
 </body>
 

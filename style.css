@@ -6,13 +6,16 @@
 /* ==========================================================================
    Base & Resets (Root overflow-x: clip & Typography Discipline)
    ========================================================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   overflow-x: clip;
 }
 
@@ -46,7 +49,8 @@ body {
 }
 
 /* Display H1: clamp(2.75rem, 5vw + 1rem, 4.5rem) / Line-height: 1.05 / Tracking: -0.03em */
-h1.display-h1, .display-h1 {
+h1.display-h1,
+.display-h1 {
   font-family: var(--font-display);
   font-size: var(--text-h1);
   line-height: var(--leading-h1);
@@ -58,7 +62,10 @@ h1.display-h1, .display-h1 {
 }
 
 /* Section H2: clamp(1.75rem, 3vw + 0.5rem, 2.5rem) / Line-height: 1.15 */
-h2.section-h2, .section-h2, .panel-title, .modal-heading {
+h2.section-h2,
+.section-h2,
+.panel-title,
+.modal-heading {
   font-family: var(--font-display);
   font-size: var(--text-h2);
   line-height: var(--leading-h2);
@@ -69,7 +76,9 @@ h2.section-h2, .section-h2, .panel-title, .modal-heading {
 }
 
 /* Subheads: Font Weight 200 or 300 */
-.subhead, .page-subhead, .lead-text {
+.subhead,
+.page-subhead,
+.lead-text {
   font-family: var(--font-sans);
   font-size: clamp(1rem, 1.2vw + 0.5rem, 1.25rem);
   font-weight: var(--weight-subhead);
@@ -79,7 +88,8 @@ h2.section-h2, .section-h2, .panel-title, .modal-heading {
 }
 
 /* Body Text: 1rem (16px) / Line-height: 1.6 / Max-width: 68ch */
-p, .body-text {
+p,
+.body-text {
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: var(--leading-body);
@@ -89,7 +99,13 @@ p, .body-text {
 }
 
 /* Meta / Labels: Font Weight 600 / Tracking +0.05em */
-.meta-label, .mono-text, .panel-count-badge, .d-day-chip, .notice-date, th, label {
+.meta-label,
+.mono-text,
+.panel-count-badge,
+.d-day-chip,
+.notice-date,
+th,
+label {
   font-weight: var(--weight-meta);
   letter-spacing: var(--tracking-meta);
 }
@@ -105,7 +121,10 @@ a {
   transition: color var(--dur-fast) var(--ease-out);
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font: inherit;
   color: inherit;
 }
@@ -118,11 +137,13 @@ button {
   user-select: none;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
-img, svg {
+img,
+svg {
   display: block;
   max-width: 100%;
 }
@@ -135,7 +156,10 @@ img, svg {
 
 /* Hallmark Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -445,6 +469,14 @@ img, svg {
   }
 }
 
+.workbench-col-left,
+.workbench-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  min-width: 0;
+}
+
 /* Panel Containers - Secondary Surface with 0px border */
 .workbench-panel {
   background-color: var(--surface-secondary);
@@ -549,10 +581,16 @@ img, svg {
   background-color: var(--color-surface-active);
 }
 
-/* Urgent / Pinned Left Accent Bar */
+/* Urgent / Pinned Accent - Clean & Subtle, NO left stripe */
 .notice-card.is-urgent {
-  border-left: 3px solid var(--color-urgent);
-  background-color: var(--surface-dominant);
+  background: linear-gradient(135deg, hsla(356, 75%, 53%, 0.07) 0%, var(--surface-dominant) 100%);
+  border: 1px solid hsla(356, 75%, 53%, 0.25);
+  box-shadow: 0 2px 10px hsla(356, 75%, 53%, 0.08);
+}
+
+[data-theme="dark"] .notice-card.is-urgent {
+  background: linear-gradient(135deg, hsla(356, 75%, 53%, 0.14) 0%, var(--surface-dominant) 100%);
+  border-color: hsla(356, 75%, 53%, 0.35);
 }
 
 .notice-card-header {
@@ -923,72 +961,287 @@ img, svg {
 }
 
 /* ==========================================================================
-   Quick Shortcut Shelf (Tactile Action Pills)
+   VengeanceUI Modern Interactive Cards (Clean 3D Tilt, No Clipping)
    ========================================================================== */
 .shortcuts-shelf {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: var(--space-32);
+  margin-bottom: var(--space-24);
+  display: flex;
+  flex-direction: column;
   gap: var(--space-16);
-  margin-top: var(--space-24);
+}
+
+.shortcuts-shelf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+}
+
+.shortcuts-shelf-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.shortcuts-shelf-badge {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  text-transform: uppercase;
+}
+
+.shortcuts-shelf-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-headline);
+  color: var(--color-ink);
+  letter-spacing: var(--tracking-h2);
+  margin: 0;
+}
+
+/* 3-Column Verse Cards Grid */
+.verse-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--space-20);
+  padding: var(--space-4) 0;
 }
 
 @media (min-width: 768px) {
-  .shortcuts-shelf {
+  .verse-cards-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-20);
   }
 }
 
-.shortcut-pill-card {
+/* Card Wrapper with 3D perspective */
+.verse-card-wrapper {
+  position: relative;
+  perspective: 1000px;
+  border-radius: 16px;
+}
+
+/* Front Main Card - Clean, self-contained, NO background clipping layers */
+.verse-card-front {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px;
+  padding: 1.25rem 1.4rem;
+  border-radius: 16px;
+  background-color: var(--surface-dominant);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.15s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  overflow: hidden;
+  will-change: transform;
+}
+
+[data-theme="dark"] .verse-card-front {
+  background: linear-gradient(180deg, #19212e 0%, #121822 100%);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.45);
+}
+
+/* Interactive Specular Glare / Light Reflection */
+.verse-card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+[data-theme="dark"] .verse-card-glare {
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+}
+
+.verse-card-front:hover .verse-card-glare {
+  opacity: 1;
+}
+
+/* Accent Theming on Hover */
+.verse-card-front.card-notice:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 16px 32px -8px rgba(234, 88, 12, 0.16), 0 0 0 1px var(--color-primary);
+}
+
+.verse-card-front.card-board:hover {
+  border-color: #a855f7;
+  box-shadow: 0 16px 32px -8px rgba(168, 85, 247, 0.18), 0 0 0 1px #a855f7;
+}
+
+.verse-card-front.card-suggestion:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 16px 32px -8px rgba(245, 158, 11, 0.18), 0 0 0 1px #f59e0b;
+}
+
+.verse-card-front:active {
+  transform: scale(0.985) !important;
+}
+
+/* Verse Card Internal Elements */
+.verse-card-topbar {
   display: flex;
   align-items: center;
-  gap: var(--space-16);
-  padding: var(--space-16) var(--space-24);
-  background-color: var(--surface-secondary);
-  border: 0px;
-  border-radius: var(--radius-container);
-  box-shadow: var(--shadow-surface);
-  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+  position: relative;
+  z-index: 3;
 }
 
-.shortcut-pill-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+.verse-card-chip {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-muted);
 }
 
-.shortcut-pill-card:active {
-  transform: translateY(0);
-}
-
-.shortcut-icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: var(--radius-micro);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
+.verse-card-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
   flex-shrink: 0;
 }
 
-.shortcut-info {
+.badge-green {
+  background-color: var(--color-success, #10b981);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+}
+
+.badge-purple {
+  background-color: #a855f7;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
+}
+
+.badge-amber {
+  background-color: var(--color-warning, #f59e0b);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+}
+
+.verse-card-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.4rem 0 0.8rem 0;
+  position: relative;
+  z-index: 3;
+}
+
+/* VengeanceUI Squircle Dock Icon Tile */
+.verse-dock-tile {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #edf1f5 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.verse-card-front:hover .verse-dock-tile {
+  transform: scale(1.08) rotate(-2deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .verse-dock-tile {
+  background: linear-gradient(180deg, #2a3547 0%, #1b2330 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.verse-dock-emoji {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.verse-dock-ping {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-dominant);
+}
+
+.verse-card-text {
   display: flex;
   flex-direction: column;
+  gap: 0.2rem;
   min-width: 0;
 }
 
-.shortcut-title {
-  font-size: var(--text-caption);
-  font-weight: var(--weight-headline);
+.verse-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
   color: var(--color-ink);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+  margin: 0;
 }
 
-.shortcut-desc {
-  font-size: var(--text-2xs);
+.verse-card-desc {
+  font-size: 0.78rem;
   color: var(--color-ink-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0;
+}
+
+.verse-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 3;
+}
+
+.verse-card-front.card-notice:hover .verse-card-footer {
+  color: var(--color-primary);
+}
+
+.verse-card-front.card-board:hover .verse-card-footer {
+  color: #a855f7;
+}
+
+.verse-card-front.card-suggestion:hover .verse-card-footer {
+  color: #f59e0b;
+}
+
+.verse-card-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.verse-card-front:hover .verse-card-arrow {
+  transform: translate(3px, -3px);
 }
 
 /* ==========================================================================
@@ -1462,11 +1715,256 @@ img, svg {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+/* ==========================================================================
+   Creative 3-Column Meal Strip (No Left Stripe!)
+   ========================================================================== */
+.meal-panel-container {
+  overflow: visible;
+}
+
+.meal-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+}
+
+.meal-date-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background-color: var(--surface-secondary);
+  color: var(--color-primary);
+  border: 1px solid hsla(24, 94%, 50%, 0.2);
+}
+
+.creative-meal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .creative-meal-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+}
+
+.creative-meal-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0.85rem;
+  background-color: var(--surface-dominant);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.2s ease, background-color 0.2s ease;
+  min-height: 250px;
+  min-width: 0;
+}
+
+[data-theme="dark"] .creative-meal-card {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.creative-meal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .creative-meal-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Active / Current Meal (NO left stripe! Elegant ambient glow & soft badge) */
+.creative-meal-card.is-active-meal {
+  background: linear-gradient(180deg, hsla(24, 95%, 53%, 0.05) 0%, var(--surface-dominant) 100%);
+  border: 1.5px solid var(--color-primary);
+  box-shadow: 0 4px 18px hsla(24, 95%, 53%, 0.12);
+}
+
+[data-theme="dark"] .creative-meal-card.is-active-meal {
+  background: linear-gradient(180deg, hsla(24, 95%, 53%, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: #f97316;
+  box-shadow: 0 6px 22px rgba(249, 115, 22, 0.22);
+}
+
+.meal-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.65rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  min-width: 0;
+}
+
+.meal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.meal-icon-pill {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-secondary);
+  color: var(--color-ink-secondary);
+  flex-shrink: 0;
+}
+
+.is-active-meal .meal-icon-pill {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.meal-time-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  margin: 0;
+  line-height: 1;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  display: inline-block;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+
+.meal-cal-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-ink-muted);
+  background-color: var(--surface-secondary);
+  padding: 0.15rem 0.35rem;
+  border-radius: 5px;
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+.meal-badge-current {
+  font-size: 0.68rem;
+  font-weight: 800;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  padding: 0.16rem 0.45rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px hsla(24, 95%, 53%, 0.35);
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+.meal-calorie-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  background-color: hsla(24, 95%, 53%, 0.08);
+  color: hsl(24, 95%, 42%);
+  margin-bottom: 0.65rem;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .meal-calorie-strip {
+  background-color: hsla(24, 95%, 53%, 0.16);
+  color: #fb923c;
+}
+
+.dish-list-wrap {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.dish-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.83rem;
+  line-height: 1.4;
+  color: var(--color-ink);
+  padding: 2px 0;
+}
+
+.dish-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-ink-muted);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.dish-text {
+  flex: 1;
+  word-break: keep-all;
+}
+
+/* Featured / Main Dish Styling */
+.dish-row.dish-highlight {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.dish-row.dish-highlight .dish-dot {
+  background-color: var(--color-primary);
+  opacity: 1;
+  width: 5px;
+  height: 5px;
+}
+
+.dish-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.32rem;
+  border-radius: 4px;
+  background-color: hsla(24, 95%, 53%, 0.12);
+  color: var(--color-primary);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .dish-tag {
+  background-color: hsla(24, 95%, 53%, 0.22);
+  color: #fb923c;
+}
+
+.headline-sub-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  margin-bottom: 0.4rem;
+}
+
+
 
 /* ==========================================================================
    Site Footer
