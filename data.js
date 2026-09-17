@@ -2,7 +2,7 @@
 const CONFIG = {
   // 학급 기본 브랜딩 정보
   portalTitle: "2학년 2반 학급 포털",
-  classBadge: "2026학년도",
+  classBadge: "",
   schoolName: "2026 고등학교",
 
   // [구글 스프레드시트 실시간 DB URL]

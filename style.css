@@ -51,7 +51,7 @@ body::before {
   width: 100%;
   max-width: 1400px;
   height: 520px;
-  background: 
+  background:
     radial-gradient(ellipse 70% 55% at 50% -10%, hsla(24, 94%, 50%, 0.10) 0%, transparent 70%),
     radial-gradient(ellipse 50% 40% at 70% -5%, hsla(265, 75%, 60%, 0.05) 0%, transparent 60%);
   pointer-events: none;
@@ -60,7 +60,7 @@ body::before {
 
 [data-theme="dark"] body::before,
 :root.dark body::before {
-  background: 
+  background:
     radial-gradient(ellipse 75% 60% at 50% -12%, hsla(24, 94%, 55%, 0.18) 0%, transparent 70%),
     radial-gradient(ellipse 55% 40% at 75% -5%, hsla(265, 80%, 65%, 0.10) 0%, transparent 65%);
 }
@@ -484,11 +484,9 @@ svg {
   z-index: 1;
   opacity: 0;
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  background: radial-gradient(
-    130px circle at var(--spotlight-x, -999px) 100%,
-    var(--spotlight-color, rgba(0, 0, 0, 0.07)) 0%,
-    transparent 55%
-  );
+  background: radial-gradient(130px circle at var(--spotlight-x, -999px) 100%,
+      var(--spotlight-color, rgba(0, 0, 0, 0.07)) 0%,
+      transparent 55%);
 }
 
 .nav-menu.has-hover .spotlight-nav-light,
@@ -505,22 +503,18 @@ svg {
   width: 100%;
   height: 2px;
   z-index: 2;
-  background: radial-gradient(
-    70px circle at var(--ambience-x, 50%) 0%,
-    var(--ambience-color, #f97316) 0%,
-    transparent 100%
-  );
+  background: radial-gradient(70px circle at var(--ambience-x, 50%) 0%,
+      var(--ambience-color, #f97316) 0%,
+      transparent 100%);
 }
 
 .spotlight-nav-ambience::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    45px circle at var(--ambience-x, 50%) 0%,
-    var(--ambience-glow, hsla(24, 94%, 50%, 0.4)) 0%,
-    transparent 100%
-  );
+  background: radial-gradient(45px circle at var(--ambience-x, 50%) 0%,
+      var(--ambience-glow, hsla(24, 94%, 50%, 0.4)) 0%,
+      transparent 100%);
   filter: blur(2px);
 }
 
@@ -607,6 +601,7 @@ svg {
 
 /* Mobile Nav Dock (Floating Spotlight Island) */
 @media (max-width: 680px) {
+
   .nav-menu.spotlight-nav,
   .nav-menu {
     position: fixed;
@@ -696,9 +691,11 @@ svg {
   0% {
     box-shadow: 0 0 0 0 hsla(152, 69%, 40%, 0.7);
   }
+
   70% {
     box-shadow: 0 0 0 7px hsla(152, 69%, 40%, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 hsla(152, 69%, 40%, 0);
   }
