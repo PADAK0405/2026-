@@ -262,49 +262,162 @@ svg {
   white-space: nowrap;
 }
 
+/* ==========================================================================
+   Spotlight Navbar (Vengeance UI Inspired Dynamic Light Bar)
+   ========================================================================== */
+.nav-menu.spotlight-nav,
 .nav-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 2.75rem;
+  padding: 0 0.35rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: hsla(210, 20%, 98%, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
+  transition: all var(--dur-normal) var(--ease-out);
+  --spotlight-color: rgba(0, 0, 0, 0.07);
+  --ambience-color: var(--color-primary, #f97316);
+  --ambience-glow: hsla(24, 94%, 50%, 0.4);
+}
+
+[data-theme="dark"] .nav-menu.spotlight-nav,
+[data-theme="dark"] .nav-menu,
+:root.dark .nav-menu.spotlight-nav,
+:root.dark .nav-menu {
+  background: hsla(222, 24%, 12%, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 26px -4px rgba(0, 0, 0, 0.5), 0 2px 6px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --spotlight-color: rgba(255, 255, 255, 0.16);
+  --ambience-color: #ffffff;
+  --ambience-glow: hsla(24, 94%, 60%, 0.6);
+}
+
+.spotlight-nav .nav-list {
   display: flex;
   align-items: center;
-  gap: var(--space-2xs);
-  background-color: var(--surface-secondary);
-  padding: 0.25rem;
-  border-radius: var(--radius-container);
-  border: 0px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  gap: 0.15rem;
+  list-style: none;
+  position: relative;
+  z-index: 10;
+}
+
+.spotlight-nav .nav-item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-link {
+  position: relative;
+  z-index: 10;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-micro);
+  height: 2.15rem;
+  padding: 0 0.95rem;
+  border-radius: 9999px;
   font-size: var(--text-caption);
-  font-weight: var(--weight-meta);
+  font-weight: 500;
   letter-spacing: var(--tracking-meta);
   color: var(--color-ink-secondary);
-  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
-  white-space: nowrap;
+  background: transparent;
   border: 0px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  cursor: pointer;
+  user-select: none;
 }
 
 .nav-link:hover {
   color: var(--color-ink);
-  background-color: var(--color-surface-hover);
+  background: transparent;
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
 }
 
 .nav-link:active {
-  background-color: var(--color-surface-active);
+  background: transparent;
+  transform: scale(0.97);
 }
 
 .nav-link.active {
-  color: var(--accent-contrast);
-  background-color: var(--color-primary);
-  box-shadow: var(--shadow-surface);
+  color: var(--color-ink);
+  font-weight: 700;
+  background: transparent;
+  box-shadow: none;
 }
 
-[data-theme="dark"] .nav-link.active {
-  background-color: var(--color-primary);
-  color: var(--accent-contrast);
+[data-theme="dark"] .nav-link.active,
+:root.dark .nav-link.active {
+  color: #ffffff;
+  font-weight: 700;
+  background: transparent;
+}
+
+/* 1. The Moving Spotlight Layer (Follows Mouse with dynamic radial gradient) */
+.spotlight-nav-light {
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: radial-gradient(
+    130px circle at var(--spotlight-x, -999px) 100%,
+    var(--spotlight-color, rgba(0, 0, 0, 0.07)) 0%,
+    transparent 55%
+  );
+}
+
+.nav-menu.has-hover .spotlight-nav-light,
+.spotlight-nav.has-hover .spotlight-nav-light {
+  opacity: 1;
+}
+
+/* 2. The Active State Ambience (Bottom beam anchored to active item) */
+.spotlight-nav-ambience {
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 2;
+  background: radial-gradient(
+    70px circle at var(--ambience-x, 50%) 0%,
+    var(--ambience-color, #f97316) 0%,
+    transparent 100%
+  );
+}
+
+.spotlight-nav-ambience::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    45px circle at var(--ambience-x, 50%) 0%,
+    var(--ambience-glow, hsla(24, 94%, 50%, 0.4)) 0%,
+    transparent 100%
+  );
+  filter: blur(2px);
 }
 
 .nav-actions {
@@ -357,27 +470,36 @@ svg {
   transform: translateY(1px);
 }
 
-/* Mobile Nav Dock */
+/* Mobile Nav Dock (Floating Spotlight Island) */
 @media (max-width: 680px) {
+  .nav-menu.spotlight-nav,
   .nav-menu {
     position: fixed;
     bottom: var(--space-md);
     left: 50%;
     transform: translateX(-50%);
     z-index: 45;
-    background-color: var(--color-surface-translucent);
-    backdrop-filter: var(--blur-glass);
-    -webkit-backdrop-filter: var(--blur-glass);
-    box-shadow: var(--shadow-surface);
-    border: 0px;
-    border-radius: var(--radius-container);
-    padding: 0.25rem;
-    max-width: calc(100vw - 2rem);
+    padding: 0 0.3rem;
+    max-width: calc(100vw - 1.5rem);
+    height: 2.85rem;
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  [data-theme="dark"] .nav-menu.spotlight-nav,
+  [data-theme="dark"] .nav-menu,
+  :root.dark .nav-menu.spotlight-nav,
+  :root.dark .nav-menu {
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .spotlight-nav .nav-list {
+    gap: 0.1rem;
   }
 
   .nav-link {
-    padding: 0.35rem 0.6rem;
-    font-size: var(--text-caption);
+    padding: 0 0.65rem;
+    font-size: var(--text-2xs);
+    height: 2.15rem;
   }
 }
 

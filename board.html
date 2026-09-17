@@ -32,20 +32,33 @@
         </div>
       </a>
 
-      <nav class="nav-menu" aria-label="주요 이동 메뉴">
-        <a href="index.html" class="nav-link">
-          <span>홈</span>
-        </a>
-        <a href="notice.html" class="nav-link">
-          <span>공지사항</span>
-        </a>
-        <a href="board.html" class="nav-link active" aria-current="page">
-          <span>자유게시판</span>
-        </a>
-        <a href="https://forms.google.com" id="suggestion-link" target="_blank" rel="noopener noreferrer"
-          class="nav-link">
-          <span>건의함 ↗</span>
-        </a>
+      <!-- Primary Navigation Menu (Spotlight Navbar) -->
+      <nav class="nav-menu spotlight-nav" aria-label="주요 이동 메뉴">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link" data-index="0">
+              <span>홈</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="notice.html" class="nav-link" data-index="1">
+              <span>공지사항</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="board.html" class="nav-link active" data-index="2" aria-current="page">
+              <span>자유게시판</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="https://forms.google.com" id="suggestion-link" target="_blank" rel="noopener noreferrer"
+              class="nav-link" data-index="3">
+              <span>건의함 ↗</span>
+            </a>
+          </li>
+        </ul>
+        <div class="spotlight-nav-light" aria-hidden="true"></div>
+        <div class="spotlight-nav-ambience" aria-hidden="true"></div>
       </nav>
 
       <div class="nav-actions">

@@ -85,6 +85,7 @@
   // =========================================================================
   function initTheme() {
     document.documentElement.setAttribute('data-theme', state.theme);
+    document.documentElement.classList.toggle('dark', state.theme === 'dark');
 
     const themeToggleBtn = document.getElementById('theme-toggle');
     if (themeToggleBtn) {
@@ -93,6 +94,7 @@
         state.theme = state.theme === 'light' ? 'dark' : 'light';
         localStorage.setItem('class_portal_theme', state.theme);
         document.documentElement.setAttribute('data-theme', state.theme);
+        document.documentElement.classList.toggle('dark', state.theme === 'dark');
         updateThemeToggleIcon(themeToggleBtn);
         showToast(state.theme === 'dark' ? '다크 모드로 전환되었습니다.' : '라이트 모드로 전환되었습니다.');
       });
@@ -1040,11 +1042,168 @@
   }
 
   // =========================================================================
+  // 6.6. VengeanceUI Spotlight Navbar Engine (Smooth Spring Physics & Ambience)
+  // =========================================================================
+  function initSpotlightNavbar() {
+    const navElements = document.querySelectorAll('.spotlight-nav, .nav-menu');
+    navElements.forEach((nav) => {
+      nav.classList.add('spotlight-nav');
+
+      // Ensure dynamic lighting elements exist
+      let light = nav.querySelector('.spotlight-nav-light');
+      if (!light) {
+        light = document.createElement('div');
+        light.className = 'spotlight-nav-light';
+        light.setAttribute('aria-hidden', 'true');
+        nav.appendChild(light);
+      }
+
+      let ambience = nav.querySelector('.spotlight-nav-ambience');
+      if (!ambience) {
+        ambience = document.createElement('div');
+        ambience.className = 'spotlight-nav-ambience';
+        ambience.setAttribute('aria-hidden', 'true');
+        nav.appendChild(ambience);
+      }
+
+      let spotlightCurrentX = 0;
+      let ambienceCurrentX = 0;
+      let cancelSpotlightAnim = null;
+      let cancelAmbienceAnim = null;
+
+      function getActiveItem() {
+        return nav.querySelector('.nav-link.active') ||
+               nav.querySelector('.nav-link[aria-current="page"]') ||
+               nav.querySelector('.nav-link');
+      }
+
+      function getCenterPos(element) {
+        if (!element) return nav.offsetWidth / 2;
+        const navRect = nav.getBoundingClientRect();
+        const itemRect = element.getBoundingClientRect();
+        return (itemRect.left - navRect.left) + (itemRect.width / 2);
+      }
+
+      // Smooth zero-dependency spring physics simulation matching Framer Motion (stiffness: 200, damping: 20)
+      function runSpring(from, to, onUpdate, onComplete) {
+        let current = from;
+        let velocity = 0;
+        const stiffness = 0.12;
+        const damping = 0.72;
+        let rafId;
+
+        function tick() {
+          const force = (to - current) * stiffness;
+          velocity = (velocity + force) * damping;
+          current += velocity;
+
+          onUpdate(current);
+
+          if (Math.abs(to - current) < 0.25 && Math.abs(velocity) < 0.25) {
+            onUpdate(to);
+            if (onComplete) onComplete();
+            return;
+          }
+          rafId = requestAnimationFrame(tick);
+        }
+
+        rafId = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(rafId);
+      }
+
+      function syncAmbience(instant = false) {
+        const activeItem = getActiveItem();
+        if (!activeItem) return;
+        const targetX = getCenterPos(activeItem);
+
+        if (instant || ambienceCurrentX === 0) {
+          ambienceCurrentX = targetX;
+          nav.style.setProperty('--ambience-x', `${targetX}px`);
+          return;
+        }
+
+        if (cancelAmbienceAnim) cancelAmbienceAnim();
+        cancelAmbienceAnim = runSpring(ambienceCurrentX, targetX, (v) => {
+          ambienceCurrentX = v;
+          nav.style.setProperty('--ambience-x', `${v}px`);
+        });
+      }
+
+      function syncSpotlightToActive(instant = false) {
+        const activeItem = getActiveItem();
+        if (!activeItem) return;
+        const targetX = getCenterPos(activeItem);
+
+        if (instant) {
+          spotlightCurrentX = targetX;
+          nav.style.setProperty('--spotlight-x', `${targetX}px`);
+          return;
+        }
+
+        if (cancelSpotlightAnim) cancelSpotlightAnim();
+        cancelSpotlightAnim = runSpring(spotlightCurrentX, targetX, (v) => {
+          spotlightCurrentX = v;
+          nav.style.setProperty('--spotlight-x', `${v}px`);
+        });
+      }
+
+      // Initial alignment
+      requestAnimationFrame(() => {
+        syncAmbience(true);
+        syncSpotlightToActive(true);
+      });
+
+      // Pointer/Mouse Tracking: Snappy immediate update
+      nav.addEventListener('mousemove', (e) => {
+        const navRect = nav.getBoundingClientRect();
+        const x = e.clientX - navRect.left;
+        nav.classList.add('has-hover');
+
+        if (cancelSpotlightAnim) {
+          cancelSpotlightAnim();
+          cancelSpotlightAnim = null;
+        }
+
+        spotlightCurrentX = x;
+        nav.style.setProperty('--spotlight-x', `${x}px`);
+      });
+
+      // Pointer Leave: Spring spotlight back to active item
+      nav.addEventListener('mouseleave', () => {
+        nav.classList.remove('has-hover');
+        syncSpotlightToActive(false);
+      });
+
+      // Smooth in-page navigation clicks
+      const links = nav.querySelectorAll('.nav-link');
+      links.forEach((link) => {
+        link.addEventListener('click', () => {
+          const href = link.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            links.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            syncAmbience(false);
+          }
+        });
+      });
+
+      // Window resize handler
+      window.addEventListener('resize', () => {
+        syncAmbience(true);
+        if (!nav.classList.contains('has-hover')) {
+          syncSpotlightToActive(true);
+        }
+      });
+    });
+  }
+
+  // =========================================================================
   // 7. App Initialization
   // =========================================================================
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initBranding();
+    initSpotlightNavbar();
     initModalEvents();
     initKeyboardShortcuts();
 
