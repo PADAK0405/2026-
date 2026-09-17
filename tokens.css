@@ -12,7 +12,7 @@
  *      Success: hsl(152, 69%, 31%) | Warning: hsl(38, 92%, 50%) | Critical/Error: hsl(356, 75%, 53%)
  * 
  * 2. Typography Scale (Modular Ratio: 1.333 - Perfect Fourth)
- *    - Font Stacks: Display: "Bricolage Grotesque", "Fraunces" | Body: "Geist", "IBM Plex Sans" | Mono: "JetBrains Mono"
+ *    - Font Stacks: Display: "Bricolage Grotesque", "Fraunces" | Body: "Geist", "IBM Plex Sans" | Mono: "Pretendard"
  *    - Weight Extremes: Headlines 800/900 | Subheads 200/300 | Body 400 | Meta/Labels 600
  *    - Fluid Scale: H1 clamp(2.75rem, 5vw + 1rem, 4.5rem) | H2 clamp(1.75rem, 3vw + 0.5rem, 2.5rem) | Body 1rem (16px) | Caption 0.8125rem (13px)
  * 
@@ -29,7 +29,7 @@
      ========================================================================= */
    --font-display: 'Bricolage Grotesque', 'Fraunces', 'Pretendard Variable', 'Pretendard', sans-serif;
    --font-sans: 'Geist', 'IBM Plex Sans', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+   --font-mono: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
    /* Weight Extreme Principle */
    --weight-subhead: 300;
