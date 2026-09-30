@@ -96,6 +96,7 @@ export async function GET(request: NextRequest) {
 
     const targetDateIndex = headerDates.indexOf(targetDate);
     const mealFmSeqs: { [key in "조식" | "중식" | "석식"]?: string } = {};
+    const tableFallbacks: { [key in "조식" | "중식" | "석식"]?: { calorie: string | null; dishes: string[] } } = {};
 
     if (targetDateIndex !== -1) {
       $("table tbody tr").each((_, tr) => {
@@ -111,6 +112,17 @@ export async function GET(request: NextRequest) {
 
           if (seqMatch) {
             mealFmSeqs[mealKey] = seqMatch[1];
+          }
+
+          // 테이블 셀에서 직접 텍스트 및 열량 파싱 (상세 팝업 실패 시 100% 안전한 폴백)
+          const calMatch = targetTd.text().match(/([0-9.]+)\s*Kcal/i);
+          const pContent = targetTd.find("p").not(".btn_style1, .fm_tit_p").html() || "";
+          const rawLines = pContent.split(/<br\s*\/?>|\r\n|\n/gi).map((s) => s.replace(/<[^>]+>/g, "").trim()).filter(Boolean);
+          if (rawLines.length > 0) {
+            tableFallbacks[mealKey] = {
+              calorie: calMatch ? `${calMatch[1]} kcal` : null,
+              dishes: rawLines,
+            };
           }
         }
       });
@@ -128,43 +140,65 @@ export async function GET(request: NextRequest) {
     const results = await Promise.allSettled(
       mealKeys.map(async (m) => {
         const seq = mealFmSeqs[m.name];
-        if (!seq) return null;
+        const fallback = tableFallbacks[m.name];
 
-        const detailRes = await fetch(FOOD_DATA_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "X-Requested-With": "XMLHttpRequest",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-          },
-          body: `fmSeq=${encodeURIComponent(seq)}`,
-          next: { revalidate: 3600 },
-        });
+        if (seq) {
+          try {
+            const detailRes = await fetch(FOOD_DATA_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "X-Requested-With": "XMLHttpRequest",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+              },
+              body: `fmSeq=${encodeURIComponent(seq)}`,
+              next: { revalidate: 3600 },
+            });
 
-        if (!detailRes.ok) return null;
+            if (detailRes.ok) {
+              const data = await detailRes.json();
+              const rawContent = data.fmCn || "";
+              const rawLines = rawContent.split(/\r\n|\n|\r/);
+              const { cleanMenu, rawMenu } = cleanMenuText(rawLines);
 
-        const data = await detailRes.json();
-        const rawContent = data.fmCn || "";
-        const rawLines = rawContent.split(/\r\n|\n|\r/);
-        const { cleanMenu, rawMenu } = cleanMenuText(rawLines);
+              const rawTitle = (data.fmTitle || "").trim();
+              const calMatch = rawTitle.match(/([0-9.]+)/);
+              const calorie = calMatch ? `${calMatch[1]} kcal` : fallback?.calorie || null;
 
-        const rawTitle = (data.fmTitle || "").trim();
-        const calMatch = rawTitle.match(/([0-9.]+)/);
-        const calorie = calMatch ? `${calMatch[1]} kcal` : null;
+              const rawPhotoPath = data.filePath || data.food?.fmcnImagePath || null;
+              const photoUrl = rawPhotoPath ? (rawPhotoPath.startsWith("http") ? rawPhotoPath : `${GAON_BASE_URL}${rawPhotoPath}`) : null;
 
-        const rawPhotoPath = data.filePath || data.food?.fmcnImagePath || null;
-        const photoUrl = rawPhotoPath ? (rawPhotoPath.startsWith("http") ? rawPhotoPath : `${GAON_BASE_URL}${rawPhotoPath}`) : null;
+              const detail: MealDetail = {
+                code: m.code,
+                name: m.name,
+                menu: cleanMenu.length > 0 ? cleanMenu : (fallback ? cleanMenuText(fallback.dishes).cleanMenu : []),
+                rawMenu: rawMenu,
+                calorie: calorie,
+                photoUrl: photoUrl,
+              };
 
-        const detail: MealDetail = {
-          code: m.code,
-          name: m.name,
-          menu: cleanMenu,
-          rawMenu: rawMenu,
-          calorie: calorie,
-          photoUrl: photoUrl,
-        };
+              return { key: m.key, detail };
+            }
+          } catch (e) {
+            console.warn(`[Meal API] Detail fetch failed for ${m.name}, using table fallback`);
+          }
+        }
 
-        return { key: m.key, detail };
+        // seq가 없거나 상세 API 호출 실패 시 테이블 셀 데이터로 복구
+        if (fallback && fallback.dishes.length > 0) {
+          const { cleanMenu, rawMenu } = cleanMenuText(fallback.dishes);
+          const detail: MealDetail = {
+            code: m.code,
+            name: m.name,
+            menu: cleanMenu,
+            rawMenu: rawMenu,
+            calorie: fallback.calorie,
+            photoUrl: null,
+          };
+          return { key: m.key, detail };
+        }
+
+        return null;
       })
     );
 

@@ -341,7 +341,7 @@
     return new Promise((resolve) => {
       const callbackName = '__classPortalGvizHandler_' + Date.now();
       const script = document.createElement('script');
-      
+
       const timer = setTimeout(() => {
         delete window[callbackName];
         if (script.parentNode) script.parentNode.removeChild(script);
@@ -1073,8 +1073,8 @@
 
       function getActiveItem() {
         return nav.querySelector('.nav-link.active') ||
-               nav.querySelector('.nav-link[aria-current="page"]') ||
-               nav.querySelector('.nav-link');
+          nav.querySelector('.nav-link[aria-current="page"]') ||
+          nav.querySelector('.nav-link');
       }
 
       function getCenterPos(element) {
