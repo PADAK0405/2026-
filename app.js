@@ -125,7 +125,7 @@
       todayDateEl.textContent = `${now.getFullYear()}.${padZero(now.getMonth() + 1)}.${padZero(now.getDate())} (${getKoreanDayName(now)})`;
     }
 
-    const suggestionLinkEls = document.querySelectorAll('#suggestion-link');
+    const suggestionLinkEls = document.querySelectorAll('#suggestion-link, #shelf-suggestion-link, #admin-form-link');
     if (suggestionLinkEls.length && typeof CONFIG !== 'undefined' && CONFIG.googleFormUrl) {
       suggestionLinkEls.forEach(link => {
         link.href = CONFIG.googleFormUrl;
