@@ -476,7 +476,7 @@
             ${isSelectedDayToday ? '<span class="selected-day-indicator">오늘 식단</span>' : ''}
           </div>
           <div style="font-size: 0.72rem; color: var(--color-ink-muted);">
-            ${this.isLoading ? '실시간 식단 조회 중...' : '조식 · 중식 · 석식 실시간 연동'}
+            ${this.isLoading ? '실시간 식단 조회 중...' : '조식 · 중식 · 석식'}
           </div>
         </div>
 
@@ -486,7 +486,7 @@
       `;
     }
 
-    // [모드 2] 주간 한눈에 5일치 그리드 뷰 렌더링
+    // [모드 2] 주간 한눈에 5일치 그리드 뷰 렌더링실시간 연동
     renderWeekView(weekDays) {
       const cardsHtml = weekDays.map(d => {
         const meals = this.getDayMealData(d.ymd);
