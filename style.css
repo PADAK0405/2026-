@@ -2090,22 +2090,21 @@ svg {
   box-shadow: 0 2px 8px hsla(24, 95%, 53%, 0.25);
 }
 
-/* Week Navigator & Weekday Strip Toolbar */
+/* Week Navigator & Weekday Buttons Toolbar */
 .meal-week-toolbar {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: var(--space-16);
   padding-bottom: var(--space-12);
   border-bottom: 1px solid var(--color-border-subtle);
+  overflow: visible;
 }
 
-@media (min-width: 640px) {
-  .meal-week-toolbar {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+.meal-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 /* Week Nav Buttons (‹ 이전 주, 오늘, 다음 주 ›) */
@@ -2144,69 +2143,79 @@ svg {
   font-weight: 800;
 }
 
-/* Weekday Pills (월, 화, 수, 목, 금) */
+/* Weekday Buttons (월, 화, 수, 목, 금) - Clean 5-Column Button Grid, No Scrollbar */
+.meal-weekday-buttons,
 .meal-weekday-strip {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  width: 100%;
+  overflow: visible;
+  padding: 0;
 }
 
+.btn-weekday,
 .btn-weekday-pill {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 52px;
-  padding: 5px 8px;
+  padding: 7px 4px;
   border-radius: 9px;
   border: 1px solid var(--color-border-subtle);
   background-color: var(--surface-dominant);
   cursor: pointer;
   transition: all 0.18s var(--ease-out);
-  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  box-sizing: border-box;
 }
 
+.btn-weekday:hover,
 .btn-weekday-pill:hover {
   border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 
+.weekday-name,
 .weekday-pill-name {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 800;
   color: var(--color-ink);
   line-height: 1.1;
 }
 
+.weekday-date,
 .weekday-pill-date {
-  font-size: 0.65rem;
+  font-size: 0.67rem;
   font-weight: 600;
   color: var(--color-ink-muted);
   line-height: 1.1;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
-/* Selected Weekday Pill */
+/* Selected Weekday Button */
+.btn-weekday.is-selected,
 .btn-weekday-pill.is-selected {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
   box-shadow: 0 3px 10px hsla(24, 95%, 53%, 0.3);
 }
 
+.btn-weekday.is-selected .weekday-name,
+.btn-weekday.is-selected .weekday-date,
 .btn-weekday-pill.is-selected .weekday-pill-name,
 .btn-weekday-pill.is-selected .weekday-pill-date {
   color: #ffffff;
 }
 
-/* Today Tag inside Weekday Pill */
+/* Today Tag inside Weekday Button */
 .weekday-today-chip {
   position: absolute;
   top: -6px;
-  right: -3px;
+  right: -2px;
   background-color: #ef4444;
   color: #ffffff;
   font-size: 0.55rem;
@@ -2217,6 +2226,7 @@ svg {
   box-shadow: 0 1px 4px rgba(239, 68, 68, 0.4);
 }
 
+.btn-weekday.is-selected .weekday-today-chip,
 .btn-weekday-pill.is-selected .weekday-today-chip {
   background-color: #ffffff;
   color: var(--color-primary);

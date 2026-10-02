@@ -362,13 +362,13 @@ const template = `/**
         </div>
       \`;
 
-      // 2. 주간 네비게이션 & 요일 탭 바 HTML
-      const weekdayPillsHtml = weekDays.map(d => {
+      // 2. 주간 네비게이션 & 요일 버튼 바 HTML (스크롤바 없는 순수 5분할 버튼)
+      const weekdayButtonsHtml = weekDays.map(d => {
         const isSelected = d.ymd === this.selectedYmd && this.viewMode === 'day';
         return \`
-          <button type="button" class="btn-weekday-pill \${isSelected ? 'is-selected' : ''} \${d.isToday ? 'is-today' : ''}" data-ymd="\${d.ymd}" aria-label="\${d.displayFull} 식단 선택">
-            <span class="weekday-pill-name">\${d.dayName}</span>
-            <span class="weekday-pill-date mono-text">\${d.monthDay}</span>
+          <button type="button" class="btn-weekday \${isSelected ? 'is-selected' : ''} \${d.isToday ? 'is-today' : ''}" data-ymd="\${d.ymd}" aria-label="\${d.displayFull} 식단 선택">
+            <span class="weekday-name">\${d.dayName}</span>
+            <span class="weekday-date mono-text">\${d.monthDay}</span>
             \${d.isToday ? '<span class="weekday-today-chip">오늘</span>' : ''}
           </button>
         \`;
@@ -376,20 +376,22 @@ const template = `/**
 
       const toolbarHtml = \`
         <div class="meal-week-toolbar">
-          <div class="meal-nav-actions" role="group" aria-label="주간 이동 컨트롤">
-            <button id="btn-meal-prev-week" type="button" class="btn-week-nav" aria-label="이전 주 급식 보기">
-              <span>‹ 이전 주</span>
-            </button>
-            <button id="btn-meal-this-week" type="button" class="btn-week-nav btn-week-today" aria-label="이번 주 급식으로 복귀">
-              <span>이번 주</span>
-            </button>
-            <button id="btn-meal-next-week" type="button" class="btn-week-nav" aria-label="다음 주 급식 보기">
-              <span>다음 주 ›</span>
-            </button>
+          <div class="meal-nav-row">
+            <div class="meal-nav-actions" role="group" aria-label="주간 이동 컨트롤">
+              <button id="btn-meal-prev-week" type="button" class="btn-week-nav" aria-label="이전 주 급식 보기">
+                <span>‹ 이전 주</span>
+              </button>
+              <button id="btn-meal-this-week" type="button" class="btn-week-nav btn-week-today" aria-label="이번 주 급식으로 복귀">
+                <span>이번 주</span>
+              </button>
+              <button id="btn-meal-next-week" type="button" class="btn-week-nav" aria-label="다음 주 급식 보기">
+                <span>다음 주 ›</span>
+              </button>
+            </div>
           </div>
 
-          <div class="meal-weekday-strip" role="tablist" aria-label="주간 요일 선택">
-            \${weekdayPillsHtml}
+          <div class="meal-weekday-buttons">
+            \${weekdayButtonsHtml}
           </div>
         </div>
       \`;
@@ -585,9 +587,9 @@ const template = `/**
       if (btnThis) btnThis.addEventListener('click', () => this.goThisWeek());
       if (btnNext) btnNext.addEventListener('click', () => this.changeWeek(1));
 
-      // 요일 탭 버튼
-      const pillBtns = this.container.querySelectorAll('.btn-weekday-pill');
-      pillBtns.forEach(btn => {
+      // 요일 선택 버튼
+      const weekdayBtns = this.container.querySelectorAll('.btn-weekday, .btn-weekday-pill');
+      weekdayBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
           const ymd = btn.getAttribute('data-ymd');
           if (ymd) this.selectDay(ymd);
