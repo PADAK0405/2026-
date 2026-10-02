@@ -1,49 +1,41 @@
 const fs = require('fs');
 
-const mealsData = JSON.parse(fs.readFileSync('meals.json', 'utf-8'));
+let mealsData = {};
+if (fs.existsSync('meals.json')) {
+  try {
+    mealsData = JSON.parse(fs.readFileSync('meals.json', 'utf-8'));
+  } catch (e) {}
+}
 
 const template = `/**
  * 2026 학급 포털 - 주간 및 일별 급식 식단표 (Weekly & Daily Meal Engine)
  * 
- * - 가온고등학교(7530907) 100% 공식 실제 식단 데이터 연동 (조식·중식·석식 전면 지원)
- * - NEIS Open API 실시간 식단 데이터 동기화 및 46일치 정밀 데이터베이스 완벽 연계
+ * - 가온고등학교(7530907) 사이트 실시간 식단 연동 (조식·중식·석식 전면 지원)
  * - [주단위 보기]:
- *   - 주차별 탐색 (이전 주 / 이번 주 / 다음 주)
- *   - 평일 5일 (월·화·수·목·금) 요일 탭 바 & '오늘' 스마트 인디케이터
+ *   - 주차별 탐색 (‹ 이전 주 / 이번 주 / 다음 주 ›)
+ *   - 평일 5일 (월·화·수·목·금) 요일 버튼 바 & '오늘' 스마트 인디케이터
  *   - [일별 상세] 3열 카드 뷰 (조·중·석식 상세, 지금 식사 실시간 하이라이트)
  *   - [주간 한눈에] 5일치 종합 식단표 보드 뷰 (중식 중심 대표메뉴 & 조·석식 요약)
+ * - 실시간 사이트 직접 연동 (Worker / 오픈 프록시 / NEIS Open API 3단계 실시간 동기화)
  */
 
 (function () {
   'use strict';
 
   const CONFIG = {
+    // Cloudflare Worker 주소가 있다면 여기에 입력 (조·중·석식 100% 실시간 초고속 연동)
+    workerApiUrl: '',
     officeCode: 'J10',
-    schoolCode: '7530907', // 가온고등학교 실제 NEIS 행정코드
+    schoolCode: '7530907', // 가온고등학교 NEIS 행정코드
     neisBaseUrl: 'https://open.neis.go.kr/hub/mealServiceDietInfo',
-    gaonWebUrl: 'https://gaon-h.goean.kr/gaon-h/ad/fm/foodmenu/selectFoodMenuView.do?mi=5369',
-    mealsJsonUrl: 'meals.json'
+    gaonWebUrl: 'https://gaon-h.goean.kr/gaon-h/ad/fm/foodmenu/selectFoodMenuView.do?mi=5369'
   };
 
-  // 가온고등학교 공식 식단 전수 검증 실제 데이터베이스
+  // 가온고등학교 공식 식단 검증 베이스라인 데이터베이스 (오프라인/로딩 중 즉각 렌더링 지원)
   const GAON_OFFICIAL_MEALS = ${JSON.stringify(mealsData, null, 2)};
 
-  // 런타임 메모리 DB (meals.json 비동기 fetch 시 확장)
+  // 런타임 메모리 DB (실시간 사이트 연동 시 메모리에서 동적 확장)
   let runtimeMealsDb = { ...GAON_OFFICIAL_MEALS };
-
-  // 비동기로 최신 meals.json 파일이 있으면 메모리 DB에 병합
-  async function syncLocalMealsJson() {
-    try {
-      const res = await fetch(CONFIG.mealsJsonUrl, { cache: 'no-cache' });
-      if (res.ok) {
-        const json = await res.json();
-        runtimeMealsDb = Object.assign({}, runtimeMealsDb, json);
-      }
-    } catch (e) {
-      // file:// 프로토콜 또는 로컬 환경에서는 내장 GAON_OFFICIAL_MEALS 데이터베이스 사용
-    }
-  }
-  syncLocalMealsJson();
 
   // 2자리 숫자 패딩
   function pad2(n) {
@@ -56,6 +48,14 @@ const template = `/**
     const m = pad2(date.getMonth() + 1);
     const d = pad2(date.getDate());
     return \`\${y}\${m}\${d}\`;
+  }
+
+  // YYYY-MM-DD 포맷 문자열 반환
+  function formatDashYMD(date) {
+    const y = date.getFullYear();
+    const m = pad2(date.getMonth() + 1);
+    const d = pad2(date.getDate());
+    return \`\${y}-\${m}-\${d}\`;
   }
 
   // 기준 날짜가 속한 주의 월요일 Date 객체 반환 (월요일 00:00:00)
@@ -163,55 +163,184 @@ const template = `/**
   }
 
   /**
-   * 해당 일자의 급식 데이터를 가온고 공식 DB와 NEIS API로부터 종합 조회합니다.
+   * 브라우저 DOMParser를 이용한 가온고 주간 HTML 파서
    */
-  async function fetchMealData(ymd) {
-    const cacheKey = \`gaon_meal_data_v4_\${ymd}\`;
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) {
+  function parseGaonHtmlLive(html) {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const thList = doc.querySelectorAll('thead th');
+      const dates = [];
+      thList.forEach(th => {
+        const m = th.textContent.match(/\\d{4}-\\d{2}-\\d{2}/);
+        if (m) dates.push(m[0]);
+      });
+      if (dates.length === 0) return null;
+
+      const weekMeals = {};
+      dates.forEach(d => {
+        const ymd = d.replace(/-/g, '');
+        weekMeals[ymd] = { '1': null, '2': null, '3': null };
+      });
+
+      const trList = doc.querySelectorAll('tbody tr');
+      trList.forEach(tr => {
+        const th = tr.querySelector('th');
+        if (!th) return;
+        const thText = th.textContent.trim();
+        let mealCode = null;
+        let timeLabel = '';
+        if (thText.includes('조식')) { mealCode = '1'; timeLabel = '오전 8:00까지'; }
+        else if (thText.includes('중식')) { mealCode = '2'; timeLabel = '오후 1:30까지'; }
+        else if (thText.includes('석식')) { mealCode = '3'; timeLabel = '오후 6:30까지'; }
+        if (!mealCode) return;
+
+        const tdList = tr.querySelectorAll('td');
+        dates.forEach((dateStr, i) => {
+          const ymd = dateStr.replace(/-/g, '');
+          const td = tdList[i];
+          if (!td) return;
+
+          const calMatch = td.textContent.match(/([0-9.]+)\\s*Kcal/i);
+          const calories = calMatch ? \`\${calMatch[1]} kcal\` : '열량 정보 없음';
+
+          const p = td.querySelector('p');
+          if (p) {
+            const rawLines = p.innerHTML.split(/<br\\s*\\/?>|\\r\\n|\\n/gi);
+            const dishes = rawLines.map(line => {
+              let cleaned = line.replace(/<[^>]+>/g, '');
+              cleaned = cleaned.replace(/\\([0-9.,\\s*]+\\)/g, '');
+              cleaned = cleaned.replace(/[*#]/g, '');
+              cleaned = cleaned.replace(/^\\s*[-/&]\\s*/, '');
+              cleaned = cleaned.replace(/\\s+/g, ' ').trim();
+              return cleaned;
+            }).filter(line => line.length > 0 && !line.includes('상세보기'));
+
+            if (dishes.length > 0) {
+              weekMeals[ymd][mealCode] = {
+                code: mealCode,
+                name: mealCode === '1' ? '조식' : mealCode === '2' ? '중식' : '석식',
+                timeLabel: timeLabel,
+                calories: calories,
+                mainDish: detectMainDish(dishes),
+                dishes: dishes
+              };
+            }
+          }
+        });
+      });
+
+      return weekMeals;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * 실시간 급식 데이터 동기화 (Worker ➜ 오픈 프록시 ➜ NEIS Open API 3단계 실시간 연동)
+   */
+  async function syncWeekMealsFromSite(mondayDate) {
+    const mondayYmd = formatYMD(mondayDate);
+    const targetDateStr = formatDashYMD(mondayDate);
+    const fridayDate = new Date(mondayDate);
+    fridayDate.setDate(fridayDate.getDate() + 4);
+    const fridayYmd = formatYMD(fridayDate);
+
+    // 1단계: Cloudflare Worker API가 등록되어 있을 경우 최우선 실시간 조회
+    if (CONFIG.workerApiUrl && CONFIG.workerApiUrl.trim().length > 0) {
       try {
-        return JSON.parse(cached);
-      } catch (e) {
-        sessionStorage.removeItem(cacheKey);
-      }
+        const workerUrl = \`\${CONFIG.workerApiUrl.replace(/\\/$/, '')}?date=\${targetDateStr}\`;
+        const res = await fetch(workerUrl);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            runtimeMealsDb = Object.assign({}, runtimeMealsDb, json.data);
+            return json.data;
+          }
+        }
+      } catch (e) {}
     }
 
-    const baseDay = runtimeMealsDb[ymd] || GAON_OFFICIAL_MEALS[ymd];
-    let result = {
-      '1': baseDay && baseDay['1'] ? { ...baseDay['1'] } : getEmptyMeal('1', '조식'),
-      '2': baseDay && baseDay['2'] ? { ...baseDay['2'] } : getEmptyMeal('2', '중식'),
-      '3': baseDay && baseDay['3'] ? { ...baseDay['3'] } : getEmptyMeal('3', '석식')
-    };
+    // 2단계: 브라우저에서 무료 오픈 프록시를 통해 가온고 사이트 실시간 주간 식단표 파싱
+    const gaonWebTarget = \`\${CONFIG.gaonWebUrl}&schDt=\${targetDateStr}\`;
+    const proxyUrls = [
+      \`https://api.allorigins.win/raw?url=\${encodeURIComponent(gaonWebTarget)}\`,
+      \`https://api.codetabs.com/v1/proxy?quest=\${encodeURIComponent(gaonWebTarget)}\`
+    ];
 
+    for (const pUrl of proxyUrls) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch(pUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const html = await res.text();
+          const parsed = parseGaonHtmlLive(html);
+          if (parsed && Object.keys(parsed).length > 0) {
+            runtimeMealsDb = Object.assign({}, runtimeMealsDb, parsed);
+            return parsed;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3단계: 교육부 NEIS 오픈 API 실시간 주간 조회 (CORS 없음, 안정적 직통)
     try {
-      const url = \`\${CONFIG.neisBaseUrl}?Type=json&ATPT_OFCDC_SC_CODE=\${CONFIG.officeCode}&SD_SCHUL_CODE=\${CONFIG.schoolCode}&MLSV_YMD=\${ymd}\`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const json = await response.json();
+      const neisUrl = \`\${CONFIG.neisBaseUrl}?Type=json&ATPT_OFCDC_SC_CODE=\${CONFIG.officeCode}&SD_SCHUL_CODE=\${CONFIG.schoolCode}&MLSV_FROM_YMD=\${mondayYmd}&MLSV_TO_YMD=\${fridayYmd}\`;
+      const res = await fetch(neisUrl);
+      if (res.ok) {
+        const json = await res.json();
         if (json.mealServiceDietInfo && Array.isArray(json.mealServiceDietInfo) && json.mealServiceDietInfo[1]?.row) {
           const rows = json.mealServiceDietInfo[1].row;
           rows.forEach(row => {
+            const ymd = String(row.MLSV_YMD);
             const code = String(row.MMEAL_SC_CODE);
             const cleaned = cleanDishNames(row.DDISH_NM);
-            if (cleaned.length > 0 && result[code]) {
+            if (cleaned.length > 0) {
+              if (!runtimeMealsDb[ymd]) {
+                runtimeMealsDb[ymd] = {
+                  '1': getEmptyMeal('1', '조식'),
+                  '2': getEmptyMeal('2', '중식'),
+                  '3': getEmptyMeal('3', '석식')
+                };
+              }
               const rawCal = (row.CAL_INFO || '').replace(/[^0-9.]/g, '');
-              const calText = rawCal ? \`\${Math.round(parseFloat(rawCal))} kcal\` : result[code].calories;
-              result[code].dishes = cleaned;
-              result[code].calories = calText;
-              result[code].mainDish = detectMainDish(cleaned);
+              const calText = rawCal ? \`\${Math.round(parseFloat(rawCal))} kcal\` : '열량 정보 없음';
+              runtimeMealsDb[ymd][code] = {
+                code: code,
+                name: code === '1' ? '조식' : code === '2' ? '중식' : '석식',
+                timeLabel: code === '1' ? '오전 8:00까지' : code === '2' ? '오후 1:30까지' : '오후 6:30까지',
+                calories: calText,
+                mainDish: detectMainDish(cleaned),
+                dishes: cleaned
+              };
             }
           });
         }
       }
-    } catch (err) {
-      // 로컬 가온고 정밀 데이터베이스로 무중단 폴백
-    }
-
-    try {
-      sessionStorage.setItem(cacheKey, JSON.stringify(result));
     } catch (e) {}
 
-    return result;
+    return null;
+  }
+
+  /**
+   * 해당 일자의 급식 데이터를 종합 반환합니다.
+   */
+  function getDayMealsFromMemory(ymd) {
+    const baseDay = runtimeMealsDb[ymd] || GAON_OFFICIAL_MEALS[ymd];
+    if (baseDay) {
+      return {
+        '1': baseDay['1'] ? { ...baseDay['1'] } : getEmptyMeal('1', '조식'),
+        '2': baseDay['2'] ? { ...baseDay['2'] } : getEmptyMeal('2', '중식'),
+        '3': baseDay['3'] ? { ...baseDay['3'] } : getEmptyMeal('3', '석식')
+      };
+    }
+    return {
+      '1': getEmptyMeal('1', '조식'),
+      '2': getEmptyMeal('2', '중식'),
+      '3': getEmptyMeal('3', '석식')
+    };
   }
 
   /**
@@ -250,23 +379,36 @@ const template = `/**
     }
 
     async init() {
+      // 1. 메모리/내장 데이터로 0초 즉각 렌더링 (깜빡임 없음)
+      this.preloadLocalWeekData();
       this.render();
-      await this.preloadWeekData();
+
+      // 2. 백그라운드에서 사이트 실시간 식단 데이터 동기화
+      await this.syncLiveWeekData();
       this.render();
     }
 
-    // 현재 주의 평일 5일 데이터 비동기 병렬 프리로딩
-    async preloadWeekData() {
+    // 메모리 캐시 로드
+    preloadLocalWeekData() {
       const weekDays = getWeekDaysInfo(this.currentMonday, this.todayYmd);
-      const promises = weekDays.map(async day => {
-        const data = await fetchMealData(day.ymd);
-        this.mealsCache[day.ymd] = data;
+      weekDays.forEach(day => {
+        this.mealsCache[day.ymd] = getDayMealsFromMemory(day.ymd);
       });
-      await Promise.all(promises);
+    }
+
+    // 사이트에서 실시간으로 직접 뽑아오기
+    async syncLiveWeekData() {
+      const liveData = await syncWeekMealsFromSite(this.currentMonday);
+      if (liveData) {
+        const weekDays = getWeekDaysInfo(this.currentMonday, this.todayYmd);
+        weekDays.forEach(day => {
+          this.mealsCache[day.ymd] = getDayMealsFromMemory(day.ymd);
+        });
+      }
     }
 
     // 주차 이동 (+1: 다음 주, -1: 이전 주)
-    changeWeek(delta) {
+    async changeWeek(delta) {
       const newMon = new Date(this.currentMonday);
       newMon.setDate(newMon.getDate() + delta * 7);
       this.currentMonday = newMon;
@@ -279,15 +421,15 @@ const template = `/**
         this.selectedYmd = weekDays[0].ymd;
       }
 
-      this.init();
+      await this.init();
     }
 
     // 오늘이 속한 주로 즉시 복귀
-    goThisWeek() {
+    async goThisWeek() {
       const now = new Date();
       this.currentMonday = getMondayOfWeek(now);
       this.selectedYmd = this.todayYmd;
-      this.init();
+      await this.init();
     }
 
     // 특정 요일 선택
@@ -303,22 +445,10 @@ const template = `/**
       this.render();
     }
 
-    // 특정 날짜의 3끼니 데이터 동기 반환 (캐시 or 런타임DB or 빈 데이터)
+    // 특정 날짜의 3끼니 데이터 반환
     getDayMealData(ymd) {
       if (this.mealsCache[ymd]) return this.mealsCache[ymd];
-      const baseDay = runtimeMealsDb[ymd] || GAON_OFFICIAL_MEALS[ymd];
-      if (baseDay) {
-        return {
-          '1': baseDay['1'] ? { ...baseDay['1'] } : getEmptyMeal('1', '조식'),
-          '2': baseDay['2'] ? { ...baseDay['2'] } : getEmptyMeal('2', '중식'),
-          '3': baseDay['3'] ? { ...baseDay['3'] } : getEmptyMeal('3', '석식')
-        };
-      }
-      return {
-        '1': getEmptyMeal('1', '조식'),
-        '2': getEmptyMeal('2', '중식'),
-        '3': getEmptyMeal('3', '석식')
-      };
+      return getDayMealsFromMemory(ymd);
     }
 
     render() {
@@ -362,7 +492,7 @@ const template = `/**
         </div>
       \`;
 
-      // 2. 주간 네비게이션 & 요일 버튼 바 HTML (스크롤바 없는 순수 5분할 버튼)
+      // 2. 주간 네비게이션 & 요일 버튼 바 HTML (클린 5분할 버튼)
       const weekdayButtonsHtml = weekDays.map(d => {
         const isSelected = d.ymd === this.selectedYmd && this.viewMode === 'day';
         return \`
@@ -619,4 +749,4 @@ const template = `/**
 `;
 
 fs.writeFileSync('meal.js', template, 'utf-8');
-console.log('Successfully generated meal.js with Weekly Meal Engine support!');
+console.log('Successfully generated meal.js with Live Site Sync & Weekly Engine support!');
