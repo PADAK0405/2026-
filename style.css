@@ -1,5 +1,4 @@
 /* DESIGN TOKENS SPECIFICATION IMPLEMENTATION */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&display=swap');
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 @import url('tokens.css');
 
@@ -41,29 +40,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Atmospheric Upper Ambient Spotlight Aura */
-body::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1400px;
-  height: 520px;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% -10%, hsla(24, 94%, 50%, 0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 70% -5%, hsla(265, 75%, 60%, 0.05) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
 
-[data-theme="dark"] body::before,
-:root.dark body::before {
-  background:
-    radial-gradient(ellipse 75% 60% at 50% -12%, hsla(24, 94%, 55%, 0.18) 0%, transparent 70%),
-    radial-gradient(ellipse 55% 40% at 75% -5%, hsla(265, 80%, 65%, 0.10) 0%, transparent 65%);
-}
 
 /* ==========================================================================
    Typography Scale & Weight Extreme Principle (Perfect Fourth: 1.333)
@@ -98,7 +75,6 @@ body::before {
   background: hsla(24, 94%, 50%, 0.12);
   border: 1px solid hsla(24, 94%, 50%, 0.35);
   color: hsl(24, 100%, 75%);
-  box-shadow: 0 0 14px hsla(24, 94%, 50%, 0.15);
 }
 
 .headline-sub-badge::before {
@@ -107,7 +83,6 @@ body::before {
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-primary);
-  box-shadow: 0 0 8px var(--color-primary);
   display: inline-block;
 }
 
@@ -128,9 +103,7 @@ h1.display-h1,
 [data-theme="dark"] .display-h1,
 :root.dark h1.display-h1,
 :root.dark .display-h1 {
-  background: linear-gradient(180deg, #FFFFFF 15%, #CBD5E1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--color-ink);
 }
 
 /* Section H2: clamp(1.75rem, 3vw + 0.5rem, 2.5rem) / Line-height: 1.15 */
@@ -305,7 +278,7 @@ svg {
   width: 2.15rem;
   height: 2.15rem;
   border-radius: 9px;
-  background: linear-gradient(135deg, hsl(24, 94%, 52%) 0%, hsl(16, 92%, 46%) 100%);
+  background-color: var(--color-primary);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -315,14 +288,12 @@ svg {
   font-size: 0.8125rem;
   letter-spacing: -0.02em;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 10px hsla(24, 94%, 50%, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform var(--dur-fast) var(--ease-out);
 }
 
 .brand-wrapper:hover .brand-emblem {
-  transform: translateY(-1px) scale(1.04);
-  box-shadow: 0 4px 14px hsla(24, 94%, 50%, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
 }
 
 .brand-title-group {
@@ -364,7 +335,6 @@ svg {
   background: hsla(24, 94%, 50%, 0.14);
   border: 1px solid hsla(24, 94%, 50%, 0.35);
   color: hsl(24, 100%, 75%);
-  box-shadow: 0 0 10px hsla(24, 94%, 50%, 0.15);
 }
 
 /* ==========================================================================
@@ -684,22 +654,6 @@ svg {
   background-color: var(--color-success);
   display: inline-block;
   position: relative;
-  box-shadow: 0 0 0 2px var(--color-success-light);
-  animation: pulse-ring 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-}
-
-@keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 hsla(152, 69%, 40%, 0.7);
-  }
-
-  70% {
-    box-shadow: 0 0 0 7px hsla(152, 69%, 40%, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 hsla(152, 69%, 40%, 0);
-  }
 }
 
 .status-deck-title {
@@ -742,7 +696,6 @@ svg {
   background: hsla(356, 75%, 53%, 0.18);
   border: 1px solid hsla(356, 75%, 53%, 0.38);
   color: hsl(356, 100%, 75%);
-  box-shadow: 0 0 12px hsla(356, 75%, 53%, 0.25);
 }
 
 /* ==========================================================================
@@ -1306,169 +1259,79 @@ svg {
   }
 }
 
-/* Card Wrapper with 3D perspective */
+/* Card Wrapper */
 .verse-card-wrapper {
   position: relative;
-  perspective: 1000px;
-  border-radius: 16px;
+  border-radius: var(--radius-container);
 }
 
-/* Front Main Card - Clean, self-contained, NO background clipping layers */
+/* Front Main Card - Clean, purposeful workbench cards */
 .verse-card-front {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 180px;
-  padding: 1.25rem 1.4rem;
-  border-radius: 16px;
+  min-height: 140px;
+  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius-container);
   background-color: var(--surface-dominant);
   border: 1px solid var(--color-border);
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-  transition: transform 0.15s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
-  transform-style: preserve-3d;
+  box-shadow: var(--shadow-surface);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
   cursor: pointer;
-  overflow: hidden;
-  will-change: transform;
 }
 
 [data-theme="dark"] .verse-card-front {
-  background: linear-gradient(180deg, #19212e 0%, #121822 100%);
+  background-color: var(--surface-dominant);
   border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 24px -5px rgba(0, 0, 0, 0.45);
 }
 
-/* Interactive Specular Glare / Light Reflection */
-.verse-card-glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.35) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 2;
-}
-
-[data-theme="dark"] .verse-card-glare {
-  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08) 0%, transparent 60%);
-}
-
-.verse-card-front:hover .verse-card-glare {
-  opacity: 1;
-}
-
-/* Accent Theming on Hover */
-.verse-card-front.card-notice:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 16px 32px -8px rgba(234, 88, 12, 0.16), 0 0 0 1px var(--color-primary);
-}
-
-.verse-card-front.card-board:hover {
-  border-color: #a855f7;
-  box-shadow: 0 16px 32px -8px rgba(168, 85, 247, 0.18), 0 0 0 1px #a855f7;
-}
-
-.verse-card-front.card-suggestion:hover {
-  border-color: #f59e0b;
-  box-shadow: 0 16px 32px -8px rgba(245, 158, 11, 0.18), 0 0 0 1px #f59e0b;
+.verse-card-front:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-hover);
 }
 
 .verse-card-front:active {
-  transform: scale(0.985) !important;
-}
-
-/* Verse Card Internal Elements */
-.verse-card-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.65rem;
-  position: relative;
-  z-index: 3;
-}
-
-.verse-card-chip {
-  font-size: var(--text-2xs);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--color-ink-muted);
-}
-
-.verse-card-badge-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.badge-green {
-  background-color: var(--color-success, #10b981);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
-}
-
-.badge-purple {
-  background-color: #a855f7;
-  box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
-}
-
-.badge-amber {
-  background-color: var(--color-warning, #f59e0b);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+  transform: translateY(0);
 }
 
 .verse-card-body {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 0.4rem 0 0.8rem 0;
-  position: relative;
-  z-index: 3;
+  gap: 0.95rem;
+  margin-bottom: 0.8rem;
 }
 
-/* VengeanceUI Squircle Dock Icon Tile */
+/* Clean SVG Icon Tile */
 .verse-dock-tile {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-micro);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  background: linear-gradient(180deg, #ffffff 0%, #edf1f5 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background-color: var(--surface-secondary);
+  color: var(--color-ink);
   flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
-.verse-card-front:hover .verse-dock-tile {
-  transform: scale(1.08) rotate(-2deg);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+.verse-card-front.card-notice:hover .verse-dock-tile {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
-[data-theme="dark"] .verse-dock-tile {
-  background: linear-gradient(180deg, #2a3547 0%, #1b2330 100%);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+.verse-card-front.card-board:hover .verse-dock-tile {
+  background-color: var(--color-purple-light);
+  color: var(--color-purple);
 }
 
-.verse-dock-emoji {
-  font-size: 1.45rem;
-  line-height: 1;
-}
-
-.verse-dock-ping {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--surface-dominant);
+.verse-card-front.card-suggestion:hover .verse-dock-tile {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .verse-card-text {
@@ -2241,7 +2104,6 @@ svg {
   padding: 6px 12px;
   background-color: var(--surface-secondary);
   border-radius: 8px;
-  border-left: 3px solid var(--color-primary);
 }
 
 .selected-day-title {

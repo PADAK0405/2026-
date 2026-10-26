@@ -6,11 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2026 2학년 2반 | 홈페이지</title>
   <meta name="description" content="2026학년도 2학년 2반 학급 포털 대시보드 - 실시간 공지 및 학사일정">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,800;0,9..144,900&family=Geist:wght@200;300;400;600;700;800&family=IBM+Plex+Sans:wght@200;300;400;600;700;800&display=swap"
-    rel="stylesheet">
   <link rel="stylesheet" as="style" crossorigin
     href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="tokens.css">
@@ -82,7 +77,6 @@
 
       <!-- Editorial Page Title / Display H1 -->
       <header class="page-headline-block">
-        <div class="headline-sub-badge mono-text">GAON HIGH SCHOOL · CLASS 2-2</div>
         <h1 class="display-h1">2026 2학년 2반</h1>
         <p class="subhead">주간 실시간 급식과 주요 학급 공지사항, 월간 학사일정을 확인하는 공간입니다.</p>
       </header>
@@ -183,104 +177,90 @@
 
       </div>
 
-      <!-- Quick Action Shelf (VengeanceUI Card Architecture) -->
+      <!-- Quick Action Shelf -->
       <section class="shortcuts-shelf" aria-label="빠른 바로가기 및 주요 서비스">
         <div class="shortcuts-shelf-header">
           <div class="shortcuts-shelf-title-group">
-            <span class="shortcuts-shelf-badge mono-text">QUICK ACCESS</span>
             <h2 class="shortcuts-shelf-title">주요 학급 서비스 바로가기</h2>
           </div>
         </div>
 
         <div class="verse-cards-grid">
-          <!-- Verse Card 1: 공지사항 전용관 -->
+          <!-- Card 1: 공지사항 전용관 -->
           <div class="verse-card-wrapper">
-            <a href="notice.html" class="verse-card-front card-notice" aria-label="공지사항 전용관으로 이동">
-              <div class="verse-card-glare" aria-hidden="true"></div>
-              <div class="verse-card-topbar">
-                <span class="verse-card-chip mono-text">01 · NOTICE HUB</span>
-                <span class="verse-card-badge-dot badge-green" title="실시간 공지 연동"></span>
-              </div>
+            <a href="notice.html" class="verse-card-front card-notice" aria-label="공지사항 전체보기">
               <div class="verse-card-body">
                 <div class="verse-dock-tile">
-                  <span class="verse-dock-emoji" aria-hidden="true">📢</span>
-                  <span class="verse-dock-ping badge-green"></span>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
                 </div>
                 <div class="verse-card-text">
-                  <h3 class="verse-card-title">공지사항 전용관</h3>
-                  <p class="verse-card-desc">검색 및 전체 필터링</p>
+                  <h3 class="verse-card-title">학급 공지사항</h3>
+                  <p class="verse-card-desc">선생님 알림 및 학급 전체 안내문 확인</p>
                 </div>
               </div>
               <div class="verse-card-footer">
-                <span class="verse-card-action-text mono-text">ENTER BOARD</span>
+                <span class="verse-card-action-text">공지사항 바로가기</span>
                 <span class="verse-card-arrow" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="7" y1="17" x2="17" y2="7"></line>
-                    <polyline points="7 7 17 7 17 17"></polyline>
+                    <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </span>
               </div>
             </a>
           </div>
 
-          <!-- Verse Card 2: 학급 자유게시판 -->
+          <!-- Card 2: 학급 자유게시판 -->
           <div class="verse-card-wrapper">
             <a href="board.html" class="verse-card-front card-board" aria-label="학급 자유게시판으로 이동">
-              <div class="verse-card-glare" aria-hidden="true"></div>
-              <div class="verse-card-topbar">
-                <span class="verse-card-chip mono-text">02 · COMMUNITY</span>
-                <span class="verse-card-badge-dot badge-purple" title="자유 소통 공간"></span>
-              </div>
               <div class="verse-card-body">
                 <div class="verse-dock-tile">
-                  <span class="verse-dock-emoji" aria-hidden="true">💬</span>
-                  <span class="verse-dock-ping badge-purple"></span>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
                 </div>
                 <div class="verse-card-text">
                   <h3 class="verse-card-title">학급 자유게시판</h3>
-                  <p class="verse-card-desc">분실물, 선택과목 질문</p>
+                  <p class="verse-card-desc">분실물 습득/신고 및 자유 소통</p>
                 </div>
               </div>
               <div class="verse-card-footer">
-                <span class="verse-card-action-text mono-text">JOIN CHAT</span>
+                <span class="verse-card-action-text">게시판 바로가기</span>
                 <span class="verse-card-arrow" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="7" y1="17" x2="17" y2="7"></line>
-                    <polyline points="7 7 17 7 17 17"></polyline>
+                    <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </span>
               </div>
             </a>
           </div>
 
-          <!-- Verse Card 3: 익명 건의함 -->
+          <!-- Card 3: 익명 건의함 -->
           <div class="verse-card-wrapper">
             <a href="https://forms.google.com" id="shelf-suggestion-link" target="_blank" rel="noopener noreferrer"
               class="verse-card-front card-suggestion" aria-label="익명 건의함 설문지 새 창 열기">
-              <div class="verse-card-glare" aria-hidden="true"></div>
-              <div class="verse-card-topbar">
-                <span class="verse-card-chip mono-text">03 · CONFIDENTIAL</span>
-                <span class="verse-card-badge-dot badge-amber" title="100% 익명 보장"></span>
-              </div>
               <div class="verse-card-body">
                 <div class="verse-dock-tile">
-                  <span class="verse-dock-emoji" aria-hidden="true">📮</span>
-                  <span class="verse-dock-ping badge-amber"></span>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
                 </div>
                 <div class="verse-card-text">
-                  <h3 class="verse-card-title">익명 건의함</h3>
-                  <p class="verse-card-desc">선생님과 반장에게 의견 전달</p>
+                  <h3 class="verse-card-title">학급 건의함</h3>
+                  <p class="verse-card-desc">건의 및 의견 제안 (구글 폼)</p>
                 </div>
               </div>
               <div class="verse-card-footer">
-                <span class="verse-card-action-text mono-text">SUBMIT FORM</span>
+                <span class="verse-card-action-text">건의함 작성하기 ↗</span>
                 <span class="verse-card-arrow" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="7" y1="17" x2="17" y2="7"></line>
-                    <polyline points="7 7 17 7 17 17"></polyline>
+                    <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </span>
               </div>

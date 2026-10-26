@@ -27,9 +27,9 @@
   /* =========================================================================
      1. TYPOGRAPHY STACKS & SCALING (Modular Ratio: 1.333 - Perfect Fourth)
      ========================================================================= */
-  --font-display: 'Bricolage Grotesque', 'Fraunces', 'Pretendard Variable', 'Pretendard', sans-serif;
-  --font-sans: 'Geist', 'IBM Plex Sans', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-mono: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, monospace;
 
   /* Weight Extreme Principle */
   --weight-subhead: 300;
@@ -164,21 +164,21 @@
   --color-ink: hsl(222, 47%, 11%);
   /* Text Primary */
   --text-primary: hsl(222, 47%, 11%);
-  --color-ink-secondary: hsl(215, 16%, 42%);
+  --color-ink-secondary: hsl(215, 22%, 34%);
   /* Text Secondary */
-  --text-secondary: hsl(215, 16%, 42%);
-  --color-ink-muted: hsl(215, 14%, 55%);
+  --text-secondary: hsl(215, 22%, 34%);
+  --color-ink-muted: hsl(215, 18%, 40%);
   --color-ink-inverse: hsl(0, 0%, 100%);
 
   /* Focal Accent (10% - Strictly limited to key CTA and active states) */
-  --color-primary: hsl(24, 94%, 50%);
-  /* International Orange / Deep Ochre */
-  --color-primary-hover: hsl(24, 94%, 43%);
-  --color-primary-light: hsla(24, 94%, 50%, 0.12);
-  --color-primary-ink: hsl(24, 94%, 40%);
+  --color-primary: hsl(24, 95%, 42%);
+  /* Deep Ochre / Burnt Orange */
+  --color-primary-hover: hsl(24, 95%, 36%);
+  --color-primary-light: hsla(24, 95%, 42%, 0.12);
+  --color-primary-ink: hsl(24, 95%, 34%);
   --accent-contrast: hsl(0, 0%, 100%);
-  --color-accent: hsl(24, 94%, 50%);
-  --color-accent-light: hsla(24, 94%, 50%, 0.12);
+  --color-accent: hsl(24, 95%, 42%);
+  --color-accent-light: hsla(24, 95%, 42%, 0.12);
 
   /* Functional Semantics (Isolated from brand accent) */
   --color-success: hsl(152, 69%, 31%);
